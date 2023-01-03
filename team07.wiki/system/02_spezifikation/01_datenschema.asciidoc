@@ -1,0 +1,5 @@
+[[sec:datenschema]]
+= Datenschema
+
+NOTE: Detaillieren Sie hier die Attribute und Zusammenhänge der Daten, die Sie link:../01_anforderungen/04_daten[bereits] identifiziert haben. Sie können hierzu im begleitenden Text die betreffenden Abschnitt aus den Anforderungen referenzieren.
+Nutzen Sie hier UML-Klassendiagramme, Entity-Relationship-Diagramme oder andere geeignete Diagrammformen. Stellen Sie auch Daten dar, die ggf. in anderen Systemen gespeichert werden, aber mit den Daten ihres Systems zusammenhängen, machen Sie die Unterscheidung aber kenntlich (ggf. durch Erläuterungen im begleitenden Text). Die spätere Verteilung des Speicherung und Übertragung der Daten auf verschiedene Datenbanken(-Schemata), Dateien, Cloud-Buckets, Endpoints etc. spielt hier noch keine Rolle.

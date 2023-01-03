@@ -1,0 +1,22 @@
+[[sec:randbedinungen]]
+= Randbedingungen
+
+[[LC01]]
+== /LC01/ vorgegebenes Modul für die Waage
+Zum Bau der Waage muss die vom Kunden vorgegebene Wägezelle mit einem HX711 Modul verwendet werden. 
+
+[[LC02]]
+== /LC02/ Stromverorgung der Waage 
+Die Stromversorgung der Waage soll mobil sein (muss) und über einen Akku mit Solarzelle (kann) betrieben werden. 
+
+[[LC03]]
+== /LC03/ vorgegebene Bluetoothtechnologie
+Die Bluetoothverbindung soll mit Bluetooth low-energy umgesetzt werden.
+
+[[LC04]]
+== /LC04/ Vorgegebenes Framework
+Als Framework soll Flutter verwendet werden mit der Programmiersprache Dart, da die App so sowohl für iOS als auch auf Android angeboten werden kann.
+
+[[LC05]]
+== /LC05/ Änderbarkeit
+Die Software soll möglichst lose gekoppelt sein, da sie unter Umständen im Nachhinein in eine bereits bestehende App eingebunden werden soll.

@@ -1,0 +1,13 @@
+[[sec:uebersicht]]
+= Übersicht
+
+
+[[sec:einsatzzweck]]
+== Einsatzzweck
+Das Produkt ist ein intelligenter Küchenhelfer, der dem Kunden bei der Zubereitung von Rezepten hilft. Das Produkt besteht aus einer App, die Gewichtsdaten von einer Waage entgegennimmt. Der Nutzer kann ein Rezept zur Zubereitung in der App auswählen und bekommt dann Anweisungen, was als Nächstes ausgeführt werden soll. Er wird also von der App durch die einzelnen Schritte des Rezepts geführt und in bestimmten Schritten sogar darüber hinaus unterstützt. Besonders beim Abwiegen der Zutaten unterstützt unser Produkt den Nutzer, indem eine akustische Rückmeldung gegeben wird, wenn das Gewicht der abzuwiegenden Zutat erreicht ist. Auch weitere Unterstützung beim Zubereiten wie das automatische Setzen und Starten eines Timers für Geh- oder Backzeiten bietet die Anwendung. Die zur Auswahl stehenden Rezepte werden bereits mit der Anwendung mitgeliefert oder können vom Nutzer selbst eingegeben werden. Das Produkt soll unter Umständen später in eine Ernährungsberatungsapp eingebunden werden.
+
+[[sec:technik]]
+== Technik
+
+Das Produkt soll sowohl eine mobile Applikation als auch mit der Bluetoothwaage ein eingebettetes System umfassen. Die Waage ist mit einem Mikrocontroller ausgestattet, welcher über eine Bluetoothschnittstelle, die mit der Technik "Bluetooth low energy" funktioniert, mit der App kommuniziert. Die Energieversorgung geschieht über einen Akku, der über Kabel oder optional über eine Solarzelle aufgeladen wird.  Die App ist eine native Smartphone-Applikation, die sowohl für die Plattform Android als auch für iOS zu Verfügung steht. Hierfür wird als Framework Flutter verwendet, auch um die Lauffähigkeit auf den verschiedenen Plattformen zu gewährleisten. Die entsprechende Programmiersprache dazu ist Dart. Das Produkt ist eine Neuentwicklung, allerdings ist der Gedanke des Kunden die Anwendung später in eine schon zu Teilen entwickelte Ernährungsberatungsapp einzubinden. Deswegen ist die Software lose gekoppelt, was in Form einer geschlossenen Dreischichtenarchitektur umgesetzt wird. Für die Datenspeicherung liegt bereits eine non-relationale Hive-Datenbank vor, die schon einige Beispielrezepte beinhaltet. Diese kann zur Entwicklung verwendet und weiter ausgebaut werden. Der optionale Zugriff auf Rezepte aus dem Internet geschieht über eine entsprechende API und würde einer Client-Server Systemarchitektur entsprechen. 
+

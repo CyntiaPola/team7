@@ -1,0 +1,12 @@
+// In dieser Datei wird ein Bild mittels image: eingebunden.
+// Daher sollte die relative Lage des Abbildungsverzeichnisses angegeben werden.
+ifndef::imagesdir[]
+:imagesdir: ../../abbildungen
+endif::[]
+
+[[sec:schnittstellen]]
+= Schnittstellen
+
+[[sec:ui]]
+== User Interface
+NOTE: Beschreiben Sie hier die Benutzungsschnittstelle Ihres Systems. Je nach System sind unterschiedliche Darstellungformen geeignet. Bei maskenorientierten Web-Applikationen eignen sich Wireframes und zugehörige Flowcharts. Falls Sie andere (lizenzpflichtige) Tools als PlantUML einsetzen, z.B. https://draw.io[draw.io] (mit aktivierten Mockup-Shapes), https://balsamiq.com/wireframes/[Balsamiq Wireframes] oder sogar Adobe XD (Adobe Creative Cloud sollte für Studierende der TH über https://th-koeln.onthehub.com/ kostenlos zu beziehen sein), binden Sie bitte hier die jeweiligen Exporte ein per `image:` oder verlinken Sie sie geeignet.

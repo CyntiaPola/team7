@@ -1,0 +1,19 @@
+[[sec:daten]]
+= Daten
+
+
+[[LD01]]
+== /LD01/ Rezept
+Ein Rezept besteht aus einem Titel, einer Portionsangabe, einer Zutatenliste, die jeder Zutat eine Menge mit Einheit zuordnet, sowie einer Folge von Anweisungen zur Ausführung des Rezepts. Hierbei gibt es drei verschiedene Arten von Anweisungen. Zum einen die, bei denen der Nutzer nur bestätigt, dass er sie ausgeführt hat (z.B. Schüssel holen, 1 Karotte schneiden). Dann gibt es noch Anweisungen zum Wiegen, bei denen der Nutzer mit der Waage arbeiten kann. Als drittes gibt es noch Anweisungen, die einen Zeitraum beinhalten, bei denen der Nutzer die Möglichkeit hat, einen Timer zu verwenden.
+
+[[LD02]]
+== /LD02/ Nährwertangaben
+Die Nährwertangaben zu einer Zutat geben an, wie viel Fett, Kohlenhydrate, Proteine und Kilokalorien die Zutat pro 100g enthält.
+
+[[LD03]]
+== /LD03/ Dichte
+Die Dichte einer Zutat gibt deren physikalische Masse, also das Verhältnis von Masse zu Volumen an, worüber aus einer Literangabe eine Gewichtangabe berechnet werden kann, die mit der Waage abgewogen werden kann.
+[[LD04]]
+== /LD04/ Settings
+Settings ist eine Datensammlung von Daten, die der Nutzer in der App einstellen kann. Dazu gehört zum Beispiel der Feinheitsgrad der Waage, der angibt, wieviel Prozent der gewogene Wert vom gewünschten Wert abweichen darf.
+

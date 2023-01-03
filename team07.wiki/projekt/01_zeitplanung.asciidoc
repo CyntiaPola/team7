@@ -1,0 +1,5 @@
+[[sec:zeitplanung]]
+= Zeitplanung
+
+NOTE: Pflegen Sie hier Ihre grobe zeitliche Planung und Zuteilung der groben Aufgaben (Gantt-Balken). Neben jeder Aufgabe sollte die CampusID des/der Verantwortlichen stehen. Ein(e) "Verantwortliche(r)" ist für die Erledigung einer Aufgabe verantwortlich, muss sie aber nicht zwangsweise selbst erledigen. Verantwortliche können Issue-List und -Boards von GitLab nutzen, um diese Aufgaben weiter in Issues herunterzubrechen und auf sich selbst oder andere Teammitglieder zu verteilen. In dem Gantt-Chart unten sind die Meilensteine für das WS 2019 schon richtig eingetragen.
+

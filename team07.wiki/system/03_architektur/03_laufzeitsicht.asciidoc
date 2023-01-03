@@ -1,0 +1,4 @@
+[[sec:laufzeitsicht]]
+= Laufzeitsicht
+
+NOTE: Schildern Sie in diesem Abschnitt typische Abläufe zur Laufzeit Ihres Systems. Verwenden Sie hierzu beispielsweise UML-Sequenzdiagramme oder UML-Aktivitätsdiagramme. Achten Sie darauf, dass der Zusammenhang zum link:02_komponenten#fig:komponenten[Komponentendiagramm] klar ist. Bei Sequenzdiagrammen sollten z.B. die Lifelines nach den Komponenten aus dem link:01_kontext#fig:kontext[Kontextdiagramm] und dem link:02_komponenten#fig:komponenten[Komponentendiagramm] benannt sein. 

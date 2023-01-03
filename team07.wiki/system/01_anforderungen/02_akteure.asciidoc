@@ -1,0 +1,4 @@
+[[sec:akteure]]
+= Akteure
+
+NOTE: Stellen Sie die Nutzergruppen Ihres System dar.

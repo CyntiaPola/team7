@@ -1,0 +1,4 @@
+[[sec:verhalten]]
+= Verhalten
+
+NOTE: In Meilenstein 2 sollten Sie die Beschreibungen verfeinern und Bezug auf die Beschreibungen im link:../03_architektur/01_kontext[Kontext] und link:../03_architektur/02_komponenten[Komponenten] nehmen. Verwenden Sie dazu insbesondere Diagramm-Notationen, die Sie aus Software-Engineering kennen.

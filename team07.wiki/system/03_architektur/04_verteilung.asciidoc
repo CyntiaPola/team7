@@ -1,0 +1,14 @@
+[[sec:verteilung]]
+= Verteilung
+
+[[sec:buildartefakte]]
+== Artefakte
+NOTE: Beschreiben Sie hier, welche Artefakte (i. d. R. Datein) relevant für die Installation Ihres System sind, d.h. auf verschiedene Stages (insb. Produktionsumgebung) deployt werden müssen. Stellen Sie insbesondere dar, welche Artefakte welche link:02_komponenten[Komponenten] beinhalten. Ein UML-Verteilungsdiagramm bietet sich hierfür an.
+
+[[sec:datenverteilung]]
+== Daten-Verteilung
+Note: Beschreiben Sie hier, welche logischen Datenspeicher, d.h. Datenbank-Schemata und Dateien in Ihrem System welche Daten aus link:../02_spezifikation/01_datenschema[dem Datenschema-Abschnitt] führend speichern.
+
+[[sec:deployment]]
+== Deployment
+NOTE: Beschreiben Sie hier mittels eines UML-Verteilungsdiagramms, wie aus welchen Nodes und Laufzeitumgebungen Ihre Produktivumgebung besteht. Nutzen Sie Stereotypen, um Nodes und Laufzeitumgebungen zu klassifizieren, beispielsweise «AppServer» oder «JRE». Stellen Sie auch dar, welche Artefakte auf welche Nodes deployt bzw. in welchen Laufzeitumgebungen geladen werden. Beschreiben Sie des Weiteren (im Begleittext), welche Daten aus dem link:../02_spezifikation/01_datenschema[dem Datenschema-Abschnitt] wo führend gespeichert werden.

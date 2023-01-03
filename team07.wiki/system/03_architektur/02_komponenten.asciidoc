@@ -1,0 +1,5 @@
+[[sec:komponenten]]
+= Komponenten
+
+NOTE: Beschreiben Sie in diesem Abschnitt die einzelnen, *inneren* Komponenten Ihres Systems, das im link:01_kontext#fig:kontext[Kontextdiagramm] noch durch eine einzelne Komponente repräsentiert wurde. 
+

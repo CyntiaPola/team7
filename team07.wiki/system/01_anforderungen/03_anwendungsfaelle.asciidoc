@@ -1,0 +1,243 @@
+[[sec:anwendungsfaelle]]
+= Anwendungsfälle
+
+
+[plantuml]
+.UML-Anwendungsfalldiagramm für Applikation und Waage
+----
+left to right direction
+rectangle Applikation {
+    usecase "/LF01/ neues Rezept anlegen" as LF01
+    usecase "/LF02/ Rezepteliste anzeigen" as LF02
+    usecase "/LF03/ Rezept anzeigen" as LF03
+    usecase "/LF04/ Rezept bearbeiten, löschen" as LF04
+    usecase "/LF05/ Rezept aus dem Internet holen" as LF05
+    
+    usecase "/LF06/ Nährwerte des Rezepts ausrechnen lassen" as LF06
+    usecase "/LF07/ Toleranzbereich der Waage einstellen" as LF07
+    usecase "/LF08/ Bluetoothverbindung herstellen/ausschalten" as LF08
+    usecase "/LF09/ Akkustand der Waage anzeigen" as LF09
+    usecase "/LF10/ Rezept ausführen" as LF10
+    usecase "/LF11/ Rezeptausführung abbrechen" as LF11
+    usecase "/LF12/ Anweisung ausgeben" as LF12
+    usecase "/LF13/ Timer starten, umstellen, stoppen" as LF13
+    usecase "/LF14/ Rückmelden, dass Anweisung ausgeführt wurde" as LF14
+    usecase "/LF15/ Zutat abwiegen" as LF15
+    usecase "/LF16/ Zutat nach Volumen abwiegen" as LF16
+    usecase "/LF17/ Nährwerte spezifisch ausrechnen" as LF17
+    
+
+}
+
+rectangle Waage {
+    usecase "/LF30/ Waage auf 0 setzen" as LF30
+    usecase "/LF31/ Waage anschalten,ausschalten" as LF31
+    usecase "/LF32/ Bluetooth an- und ausschalten" as LF32
+    usecase "/LF33/ Bluetoothverbindung zurücksetzen" as LF33
+    usecase "/LF34/ Gewicht an der Waage anzeigen" as LF34
+
+}
+
+actor "Nutzer"
+
+Nutzer -- (LF01)
+Nutzer -- (LF02)
+Nutzer -- (LF05)
+Nutzer -- (LF07)
+Nutzer -- (LF08)
+Nutzer -- (LF09)
+
+Nutzer -- (LF31)
+Nutzer -- (LF32)
+Nutzer -- (LF33)
+
+(LF10) -[hidden]- (LF11)
+(LF11) .> (LF10) : <<extend>> 
+(LF10) -[hidden]- (LF12)
+(LF10) .> (LF12) : <<include>>
+(LF10) -[hidden]- (LF14)
+(LF10) .> (LF14) : <<include>>
+(LF10) -[hidden]- (LF13)
+(LF13) .> (LF10) : <<extend>>
+(LF17) .> (LF10) : <<extend>>
+(LF15) -[hidden]- (LF10)
+(LF15) .> (LF10) : <<extend>>
+(LF15) .> (LF16) : <<include>>
+(LF15) -[hidden]- (LF16)
+(LF30) .> (LF15) : <<extend>>
+(LF02) -[hidden]- (LF03)
+(LF03) .> (LF02) : <<extend>>
+(LF04) -[hidden]- (LF03)
+(LF04) .> (LF03) : <<extend>>
+
+(LF10) -[hidden]- (LF03)
+(LF10) .> (LF03) : <<extend>>
+(LF03) -[hidden]- (LF06)
+(LF03) .> (LF06) : <<include>>
+(LF32) .> (LF34) : <<extend>>
+
+----
+
+Da es nur einen Akteur, nämlich den Nutzer gibt, wurde dieser Punkt bei den Anwendungsfällen weggelassen.
+
+[[LF01]]
+== /LF01/ neues Rezept anlegen
+
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Der Nutzer soll die Möglichkeit haben, selbst ein Rezept mit Titel, Zutatenliste und eine Liste von Zubereitungsanweisungen mit ggf. Wiege- oder Zeitmessungsangaben zur Bearbeitung des Rezepts einspeichern zu können.
+
+[[LF02]]
+== /LF02/ Rezepteliste anzeigen
+
+[horizontal]
+Priorität:: Muss
+Beschreibung:: 
+Der Nutzer kann sich eine Liste von Titeln den aller Rezepte anzeigen lassen. Hieraus kann er wiederum einzelne Rezepte auswählen und sich diese anzeigen lassen. Außerdem kann er die Liste durch Eingabe eines Suchbegriffs nach bestimmten Titeln filtern. 
+
+[[LF03]]
+== /LF03/ Rezept anzeigen
+
+[horizontal]
+Priorität:: Muss
+Beschreibung:: Der Nutzer kann sich ein gewünschtes Rezept anzeigen lassen und bekommt die Optionen, dieses zu bearbeiten, zu löschen oder mit der Zubereitung zu beginnen. Dieser Anwendungsfall basiert auf /LF02/.
+
+
+[[LF04]]
+== /LF04/ Rezept bearbeiten, löschen 
+
+[horizontal]
+Priorität:: Muss
+Beschreibung:: 
+Bereits gespeicherte Rezepte können im Nachhinein angepasst oder wieder gelöscht werden.  Dieser Anwendungsfall basiert auf /LF03/.
+
+
+[[LF05]]
+== /LF05/ Rezepte aus dem Internet holen 
+
+[horizontal]
+Priorität:: Kann
+Beschreibung:: 
+Der Nutzer soll eine Möglichkeit bekommen, sich Rezepte auch von bestimmten Seiten aus dem Internet anzeigen lassen zu können und davon Rezepte zur Ausführung auswählen zu können.
+Der Nutzer kann die aus dem Internet geladenen Rezepte in seine persönliche Rezepteliste übernehmen, um diese auch offline nutzen zu können.
+
+
+[[LF07]]
+== /LF07/ Toleranzbereich der Waage einstellen
+[horizontal]
+Priorität:: Kann
+Beschreibung::  
+Der Nutzer kann in der App einstellen, wie viel Prozent der gewogene Wert vom gewünschten Wert abweichen darf.
+
+
+[[LF08]]
+== /LF08/ Bluetoothverbindung herstellen/ausschalten 
+[horizontal]
+Priorität:: Muss
+Beschreibung:: 
+Der Nutzer kann aus der App heraus die Bluetoothverbindung zur Waage herstellen und stoppen, wenn Bluetooth an der Waage eingeschaltet ist.
+
+[[LF09]]
+== /LF09/ Akkustand der Waage anzeigen
+[horizontal]
+Priorität:: Kann
+Beschreibung:: 
+Der Nutzer kann aus der App heraus den Akkustand der Waage abfragen.
+
+[[LF10]]
+== /LF10/ Rezept ausführen
+[horizontal]
+Priorität:: Muss
+Beschreibung:: 
+Der Nutzer kann ein Rezept aus der Liste zur Ausführung auswählen und eine Portionsangabe eingeben, wodurch die Rezeptabarbeitung mit der entsprechend angepassten Zutatenmenge gestartet wird.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF03/].
+
+
+[[LF11]]
+== /LF11/ Rezeptausführung abbrechen
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Die Rezeptausführung kann nach Start wieder abgebrochen werden.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+
+[[LF12]]
+== /LF12/ Anweisung ausgeben 
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Ist ein Rezept zur Ausführung gewählt, so gibt die App textuell oder per Sprachausgabe (kann -Bedingung) die als nächstes auszuführende Anweisung aus.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+[[LF13]]
+== /LF13/ Timer starten, umstellen, stoppen
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Beinhaltet eine Anweisung einen Zeitraum für die Ausführung, so kann der Nutzer einen Timer mit der angegebenen Zeit starten, auf eine gewünschte Zeit umstellen oder den Vorgang ohne Timerstart überspringen. Ist der Timer gestartet, so kann er jederzeit in der App gestoppt und dann neu eingestellt oder übersprungen werden werden. Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+[[LF14]]
+== /LF14/ Rückmelden, dass Anweisung ausgeführt wurde
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Der Nutzer kann der App per Button oder Spracheingabe (kann -Bedingung) zurückmelden, wenn er eine Anweisung ausgeführt hat, sodass die App die nächste Anweisung ausgibt.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+[[LF15]]
+== /LF15/ Zutat abwiegen
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Ist der nächste auszuführende Vorgang ein Wiegevorgang und die Bluetoothverbindung mit der Waage hergestellt, so kann der Nutzer die in der App angegebene Zutat auf die Waage geben und erhält eine akustische Rückmeldung, wenn das geforderte Gewicht +/- der erlaubten Abweichung erreicht ist. Liegt das Gewicht außerhalb des gewünschten Bereichs, soll dies ebenfalls akustisch zurückgemeldet werden. Zudem wird das aktuell gemessene Gewicht als Zahl angezeigt. Dies setzt eine bestehende Bluetoothverbindung aus /LF08 voraus.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+[[LF16]]
+== /LF16/ Zutat nach Volumen abwiegen
+[horizontal]
+Priorität:: Kann
+Beschreibung::
+Beim Wiegen von Zutaten werden Volumen-Angaben wie ml mithilfe der in einer Datenbank gespeicherten Dichten der jeweiligen Zutaten direkt in Gewichtsangaben umgerechnet.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF15/].
+
+[[LF17]]
+== /LF17/ Nährwerte spezifisch ausrechnen 
+[horizontal]
+Priorität:: Kann
+Beschreibung::
+Anhand der Werte die die Waage zurückmeldet und gespeicherten Nährwertangaben zu den einzelnen Zutaten kann der Nutzer die genauen Nährwerte seiner zubereiteten Rezepte einsehen.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF10/].
+
+
+[[LF30]]
+== /LF30/ Waage auf 0 setzen
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Während eines Wiegevorgangs hat der Nutzer die Möglichkeit, die Waage auf 0 zurückzusetzen.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF15/].
+
+
+[[LF31]]
+== /LF31/ Waage anschalten,ausschalten
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Die Waage und damit die Bluetoothschnittstelle kann ein- und ausgeschaltet werden und nach dem Einschalten ist die Waage als Bluetoothgerät sichtbar und bereit, sich mit einem anderen Gerät zu verbinden.
+
+[[LF32]]
+== /LF32/ Bluetooth an- und ausschalten
+[horizontal]
+Priorität:: Kann
+Beschreibung::
+Bluetooth kann an der Waage separat vom Ein- und Ausschaltvorgang der Waage ein- und ausgeschaltet werden und nach dem Einschalten ist die Waage sichtbar und bereit, sich mit einem Gerät zu verbinden. So kann die Waage auch separat von der App benutzt werden und so Energie sparen.  Dieser Anwendungsfall basiert auf link:../01_anforderungen/03_anwendungssfaelle[/LF34/].
+
+
+[[LF33]]
+== /LF33/ Bluetoothverbindung zurücksetzen
+[horizontal]
+Priorität:: Muss
+Beschreibung::
+Die Bluetoothverbindung kann an der Waage zurückgesetzt werden, sodass sich die Waage mit einem neuen Gerät verbinden kann.
+
+
+[[LF34]]
+== /LF34/ Gewicht an der Waage anzeigen
+[horizontal]
+Priorität:: Kann
+Beschreibung::
+Der Nutzer kann über ein Display an der Waage das aktuell gemessene Gewicht ablesen.

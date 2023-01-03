@@ -1,0 +1,11 @@
+[[sec:kontext]]
+= Kontext
+
+NOTE: Modellieren Sie hier Ihr System als eine einzige, nicht weiter aufgebrochene Komponente im technischen Zusammenhang mit umgebenen Systemen.
+
+
+
+
+
+
+
