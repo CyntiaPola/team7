@@ -7,6 +7,8 @@ import 'package:smart_waage/Fachlogik/SteuerungsAPI/Rezeptbuch_Controller.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/SettingsController.dart';
 import 'package:smart_waage/Fachlogik/service_locator.dart';
 
+import '../EinkaufeGUI/EinkaufeHome.dart';
+
 
 
 class HomeScreen extends StatefulWidget{
@@ -59,7 +61,9 @@ final List<Widget> _pages = <Widget>[
       ),
     ),
 
-    Center(
+
+    EinkaufeHome(),
+    /*Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
@@ -67,7 +71,7 @@ final List<Widget> _pages = <Widget>[
           Icon(Icons.shopping_bag_outlined),
         ],
       ),
-    ),
+    ),*/
 
     Rezeptbuch_home(),
 
