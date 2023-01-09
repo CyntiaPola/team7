@@ -33,7 +33,7 @@ int AUTO_ID = 0;
 
 class EinkaufeModel{
    String name;
-   num weight;
+   int weight;
    String unit;
    bool isChecked = false;
    int id;
@@ -134,13 +134,13 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
                           })
                         });
                       },
-                      child: Text('Abbreichen'),
                       style: ElevatedButton.styleFrom(
 
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(2), // <-- Radius
                         ),
                       ),
+                      child: const Text('Abbreichen'),
                     )),
 
                     Spacer(),
