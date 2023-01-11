@@ -9,7 +9,6 @@ import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDschritt.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutaten.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutaten_Name.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutats_Menge.dart';
-import 'package:smart_waage/Fachlogik/SteuerungsAPI/GekochtesRezept.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/KochenRezeptAnzeigenController.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/Zutat_Rezeptanzeige.dart';
 import 'package:smart_waage/Fachlogik/service_locator.dart';
@@ -83,19 +82,16 @@ class KochenRezeptAnzeigenControllerImpl implements KochenRezeptAnzeigenControll
   }
 
 
-  ///Setzt die Daten des aktuellen Rezepts auf die übergebenen Werte
-  ///Übernimmt zusätzlich noch ein bereits vorhandenes GekochtesRezept, wie es beim Wechsel von PLäneGUI auf Kochen bereits vorliegt
-  ///Diese Methode wird von Steuerungsklassen aufgerufen, wenn in ihrer zugehörigen GUI der Kochenbutton geklickt wird
-  ///So erhält die KochenSteuerung die Daten zum gewünschten Rezept
-  void RezeptSetzenMitGekochtesRezept(Rezept rezept, List<Schritte_Rezeptanzeige> schrittliste, int schrittzaehler,  List<String> zutatennamen , List<Zutat_Rezeptanzeige> zutatenliste, double aktuelleportion, List<String> kategorienliste , GekochtesRezept gekochtesRezept){
-
-  }
-
 
 
   ///Gibt die gewählte Portion des aktuellen Rezepts zurück
   double portionGeben(){
     return aktuelleportion;
+  }
+
+
+  void portionSetzen(double aktuellePortion){
+    this.aktuelleportion=aktuellePortion;
   }
 
   ///Gibt den Titel des aktuellen Rezepts zurück
@@ -236,11 +232,7 @@ class KochenRezeptAnzeigenControllerImpl implements KochenRezeptAnzeigenControll
 
 
 
-  ///Setzt das aktuell GekochteRezept auf [gekochtesRezept]
-  void GekochtesRezeptSetzen(GekochtesRezept gekochtesRezept){
 
-    //Muss noch implementiert werden
-  }
 
 
 

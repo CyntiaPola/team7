@@ -13,7 +13,6 @@ class ICRUDRezeptImpl implements ICRUDRezept {
   var _rezeptBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_rezeptBox == null) _rezeptBox = await Hive.openBox("rezepte");
   }
 
@@ -21,7 +20,6 @@ class ICRUDRezeptImpl implements ICRUDRezept {
     await _instance._initBox();
     var rezepte = _instance._rezeptBox.values;
     Rezept rezept = rezepte.firstWhere((element) => element.rezept_id == id);
-    //rezeptBox.close();
 
     return rezept;
   }
@@ -40,7 +38,6 @@ class ICRUDRezeptImpl implements ICRUDRezept {
         .where((element) =>
             element.titel.toLowerCase().contains(titel.toLowerCase()) == true)
         .toList();
-    //rezeptBox.close();
   }
 
   Future<int> setRezept(
@@ -65,7 +62,6 @@ class ICRUDRezeptImpl implements ICRUDRezept {
         anspruch: anspruch,
         bild: bild);
     await _instance._rezeptBox.add(rezept);
-    //await _instance._rezeptBox.close();
 
     return rezeptID;
   }
@@ -79,7 +75,6 @@ class ICRUDRezeptImpl implements ICRUDRezept {
       }
     }
     return 0;
-    //rezeptBox.close();
   }
 
   Future<void> updateRezept(

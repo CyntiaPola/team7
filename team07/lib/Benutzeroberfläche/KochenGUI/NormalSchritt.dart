@@ -1,16 +1,21 @@
 
+import 'package:alan_voice/alan_voice.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_waage/Benutzeroberfl%C3%A4che/KochenGUI/Timerschritt.dart';
 import 'package:smart_waage/Benutzeroberfl%C3%A4che/RezepteGUI/RezepteAnzeigen/RezeptAnzeige.dart';
 
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/KochenRezeptAnzeigenController.dart';
 import 'package:smart_waage/Fachlogik/service_locator.dart';
 
+import '../../Fachlogik/SteuerungsAPI/Kochen_Controller.dart';
 import '../../Fachlogik/TabHandlerSteuerung/Bluetoothverbindung_reactive_ble.dart';
 
 
 class NormalSchritt extends StatefulWidget {
   final stateManager = getIt<KochenRezeptAnzeigenController>();
+  final kochenManager = getIt<Kochen_Controller>();
+
 
 
 
@@ -22,20 +27,44 @@ class NormalSchritt extends StatefulWidget {
 
 
 class NormalSchrittState extends State<NormalSchritt> {
+
+
+
+
+Future<void> _handelCommand (Map<String, dynamic> command) async {
+
+  switch (command["command"]) {
+    case "next":
+      widget.stateManager.aktuellerSchrittSetzen(widget.stateManager.schrittnotifier.value+1);
+
+      widget.kochenManager.gekochtesRezeptAktualisieren(-1, "", false);
+      await widget.kochenManager.gibBerechneteNaehrwerte();
+      await widget.kochenManager.DichteLaden();
+
+      break;
+    default:
+      debugPrint("Unknown command");
+      break;
+  }
+}
   Bluetoothverbindung_reactive_ble bluetoothverbindung_reactive_ble =
   getIt<Bluetoothverbindung_reactive_ble>();
   var schrittliste;
 
 
-
-
   @override
   void initState() {
-    widget.stateManager.aktuellPortionZurueckSetzen();
+
+
+
+
+    AlanVoice.onCommand.clear();
+    AlanVoice.onCommand.add((command) => _handelCommand(command.data));
+   // widget.stateManager.aktuellPortionZurueckSetzen();
     schrittliste= widget.stateManager.schritteGeben();
     super.initState();
-
   }
+
 
 
 
@@ -48,6 +77,7 @@ class NormalSchrittState extends State<NormalSchritt> {
 
   @override
   Widget build(BuildContext context) {
+     AlanVoice.activate();
 
     return
       Column(
@@ -66,7 +96,7 @@ class NormalSchrittState extends State<NormalSchritt> {
         
             SizedBox(height: 30),
 
-
+          
 
             SizedBox(height: 30),
 
@@ -82,30 +112,23 @@ class NormalSchrittState extends State<NormalSchritt> {
                       height: 50,
                       child:
                       ElevatedButton(
-
-                          onPressed: ()  {
-
-
+                          onPressed: ()  async {
                         widget.stateManager.aktuellerSchrittSetzen(widget.stateManager.schrittnotifier.value+1);
 
+                        widget.kochenManager.gekochtesRezeptAktualisieren(-1, "", false);
+                        await widget.kochenManager.gibBerechneteNaehrwerte();
+                        await widget.kochenManager.DichteLaden();
 
-                      }, child:Text("Ausgeführt",
+
+                          }, child:Text("Ausgeführt",
                           style: TextStyle(fontSize: 20)) ))
                 ]),
 
 
             SizedBox(width: 10),
-          ])
-
-      
-
-
-
-
-
-
-    ;
+          ]); 
   }
+
 
 
   Widget settings() {
@@ -144,11 +167,6 @@ class NormalSchrittState extends State<NormalSchritt> {
   }
 
 
-
-
-
-
-
-
-
 }
+
+

@@ -441,7 +441,6 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
   ///rechnet hierfür die Mengenangaben auf eine Portion herunter
     @override
     speichern()  async {
-    print("hier");
       int anspruch = 1;
       for (int i = 0; i < 5; i++) {
         if (anspruchNotifier.value[i] == Colors.yellow) {
@@ -464,7 +463,6 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
 
         bool NameSchonVorhanden= ( await zutatennameSchnittstelle.getZutatenNameId(zutatenNotifier.value[i].name)!=-1);
 
-        print(await zutatennameSchnittstelle.getZutatenNameId(zutatenNotifier.value[i].name));
 
         double kcal=-1;
         double fat=-1;
@@ -486,49 +484,45 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
 
 
           if(daten!=null){
-            translatedText = daten['responseData']['translatedText'];
+            translatedText = daten['responseData']['translatedText'].toLowerCase();
+
           }
 
-          String apiKey = "149c1d4f821f4d4bb7dfde170d6a93eb";
-          apiUrl = "https://api.spoonacular.com/food/ingredients/search?query=$translatedText&apiKey=$apiKey&locale=de-DE";
+          print("übersetzung");
+          print(translatedText);
 
 
-          response= await http.get(Uri.parse(apiUrl));
-          daten = json.decode(response.body);
+          String apiKey= "WRzOZM8mCLHKzVlT/KzxCw==lrUTrAzwqmWE7pKK";
+          apiUrl= "https://api.api-ninjas.com/v1/nutrition?query=$translatedText";
 
-          if(daten['results'].isNotEmpty) {
-            int id = daten['results'][0]['id'];
-            apiUrl =
-            "https://api.spoonacular.com/food/ingredients/$id/information?amount=100&unit=g&apiKey=$apiKey";
+          Map<String, String> headers = {
+            "X-Api-Key": apiKey,
+          };
 
-            response = await http.get(Uri.parse(apiUrl));
-            daten = json.decode(response.body);
-           
-            var datentabelle = daten['nutrition']['nutrients'];
-
-
-            for (var d in datentabelle) {
-              if (d['name'] == 'Calories') {
-                kcal = (d['amount']);
-              }
-              if (d['name'] == 'Fat') {
-                fat = (d['amount']);
-              }
-              if (d['name'] == 'Saturated Fat') {
-                saturatedFat = (d['amount']);
-              }
-              if (d['name'] == 'Sugar') {
-                sugar = (d['amount']);
-              }
-
-              if (d['name'] == 'Protein') {
-                protein = (d['amount']);
-              }
-              if (d['name'] == 'Sodium') {
-                sodium = (d['amount']);
-              }
+          response= await get(Uri.parse(apiUrl), headers:  headers);
+          print(response.body);
+          List <String> getrimmteResponse  = response.body.replaceAll(",", "").replaceAll('"', "").replaceAll(":", "").replaceAll("}]", "").split(" ");
+          for(int j=0; j< getrimmteResponse.length; j++){
+            if(getrimmteResponse[j]=="calories"){
+              kcal= double.parse(getrimmteResponse[j+1]);
+            }
+            if(getrimmteResponse[j]=="fat_total_g"){
+              fat= double.parse(getrimmteResponse[j+1]);
+            }
+            if(getrimmteResponse[j]=="fat_saturated_g"){
+              saturatedFat= double.parse(getrimmteResponse[j+1]);
+            }
+            if(getrimmteResponse[j]=="protein_g"){
+              protein= double.parse(getrimmteResponse[j+1]);
+            }
+            if(getrimmteResponse[j]=="sodium_mg"){
+              sodium= double.parse(getrimmteResponse[j+1]);
+            }
+            if(getrimmteResponse[j]=="sugar_g"){
+              sugar= double.parse(getrimmteResponse[j+1]);
             }
           }
+
 
 
         }
@@ -616,7 +610,16 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
 
     for (int i = 0; i < zutatenNotifier.value.length; i++) {
 
-      bool NameSchonVorhanden= (zutatennameSchnittstelle.getZutatenNameId(zutatenNotifier.value[i].name)!=-1);
+      bool NameSchonVorhanden= ( await zutatennameSchnittstelle.getZutatenNameId(zutatenNotifier.value[i].name)!=-1);
+
+
+      double kcal=-1;
+      double fat=-1;
+      double saturatedFat=-1;
+      double sugar=-1;
+
+      double protein=-1;
+      double sodium=-1;
 
       int naehrwertid=-1;
       String translatedText="";
@@ -627,51 +630,70 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
         Map<String, dynamic> daten = json.decode(response.body);
 
 
+
+
         if(daten!=null){
-          translatedText = daten['responseData']['translatedText'];
+          translatedText = daten['responseData']['translatedText'].toLowerCase();
+
+
         }
 
-        String apiKey = "149c1d4f821f4d4bb7dfde170d6a93eb";
-        apiUrl = "https://api.spoonacular.com/food/ingredients/search?query=$translatedText&apiKey=$apiKey&locale=de-DE";
+        String  apiKey= "WRzOZM8mCLHKzVlT/KzxCw==lrUTrAzwqmWE7pKK";
+        apiUrl= "https://api.api-ninjas.com/v1/nutrition?query=$translatedText";
+
+        Map<String, String> headers = {
+          "X-Api-Key": apiKey,
+        };
+
+        response= await get(Uri.parse(apiUrl), headers:  headers);
+        print(response.body);
 
 
-        response= await http.get(Uri.parse(apiUrl));
-        daten = json.decode(response.body);
+        List <String> getrimmteResponse  = response.body.replaceAll(",", "").replaceAll('"', "").replaceAll(":", "").replaceAll("}]", "").split(" ");
+        for(int j=0; j< getrimmteResponse.length; j++){
+          if(getrimmteResponse[j]=="calories"){
+            kcal= double.parse(getrimmteResponse[j+1]);
 
-        int id= daten['results'][0]['id'];
-        apiUrl = "https://api.spoonacular.com/food/ingredients/$id/information?amount=100&unit=g&apiKey=$apiKey";
 
-        response= await http.get(Uri.parse(apiUrl));
-        daten = json.decode(response.body);
-        var datentabelle=daten['nutrition']['nutrients'];
-
-        for(var d in datentabelle){
-          if(d['name']=='Calories'){
-            print (d['amount']);
           }
-          if(d['name']=='Fat'){
-            print (d['amount']);
-          }
-          if(d['name']=='Saturated Fat'){
-            print (d['amount']);
-          }
-          if(d['name']=='Sugar'){
-            print (d['amount']);
-          }
+          if(getrimmteResponse[j]=="fat_total_g"){
+            fat= double.parse(getrimmteResponse[j+1]);
 
-          if(d['name']=='Protein'){
-            print (d['amount']);
           }
-          if(d['name']=='Sodium'){
-            print (d['amount']);
-          }
+          if(getrimmteResponse[j]=="fat_saturated_g"){
+            saturatedFat= double.parse(getrimmteResponse[j+1]);
 
+          }
+          if(getrimmteResponse[j]=="protein_g"){
+            protein= double.parse(getrimmteResponse[j+1]);
+
+          }
+          if(getrimmteResponse[j]=="sodium_mg"){
+            sodium= double.parse(getrimmteResponse[j+1]);
+
+          }
+          if(getrimmteResponse[j]=="sugar_g"){
+            sugar= double.parse(getrimmteResponse[j+1]);
+
+          }
         }
+
+
+
       }
 
 
       int name_id = await zutatennameSchnittstelle.setZutatenName(
           zutatenNotifier.value[i].name, translatedText);
+
+      if(NameSchonVorhanden==false){
+        naehrwertid= await naehrwerteSchnittstelle.setNaehrwerte_pro_100g(name_id, kcal, fat, saturatedFat, sugar,  protein, sodium);
+
+      }
+      else{
+        naehrwertid= await naehrwerteSchnittstelle.getNaehrwertIdByNameId(name_id);
+      }
+
       await zutatenSchnittstelle.setZutat(
           name_id,
           rezeptid,
@@ -702,13 +724,13 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
       if (schrittNotifier.value[i].timerschritt) {
         await schrittSchnittstelle.setSchritt(
             i + 1, rezeptid, int.parse(schrittNotifier.value[i].zeit),
-            false, schrittNotifier.value[i].schritt); // hier noch richtige Werte eintragen
+            false, schrittNotifier.value[i].schritt);
 
 
       }
       else if (schrittNotifier.value[i].wiegeschritt) {
         int schrittid = await schrittSchnittstelle.setSchritt(
-            i + 1, rezeptid, 0, true, schrittNotifier.value[i].schritt); // hier noch richtige Werte eintragen
+            i + 1, rezeptid, 0, true, schrittNotifier.value[i].schritt);
         int zutatenNameid = await zutatennameSchnittstelle.setZutatenName(
             schrittNotifier.value[i].zutat, "");
         int korrespondierendeZutatId = await zutatenSchnittstelle
@@ -716,13 +738,12 @@ class RezeptAnlegenControllerImpl implements RezeptAnlegenController {
 
         await schrittzutatenSchnittstelle.setZutatsMenge(
             rezeptid, schrittid, korrespondierendeZutatId,
-            //Zutatenid noch abklären
             (int.parse(schrittNotifier.value[i].menge)/int.parse(portion)).toInt(),
             schrittNotifier.value[i].einheit);
       }
       else {
         await schrittSchnittstelle.setSchritt(i + 1, rezeptid, 0,
-            false, schrittNotifier.value[i].schritt); // hier noch richtige Werte eintragen Nährwertid!
+            false, schrittNotifier.value[i].schritt);
 
       }
     }

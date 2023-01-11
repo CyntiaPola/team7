@@ -12,7 +12,6 @@ class ICRUDkategorieImpl implements ICRUDkategorie {
   var _kategorieBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_kategorieBox == null) _kategorieBox = await Hive.openBox("kategorie");
   }
 
@@ -27,27 +26,23 @@ class ICRUDkategorieImpl implements ICRUDkategorie {
     var kategorien = _instance._kategorieBox.values;
     Kategorie kategorie = kategorien
         .firstWhere((element) => element.kategorie_id == kategorie_id);
-    //rezeptBox.close();
 
     return kategorie;
   }
 
-  Future<int>  getKategorieIdByName(String kategorie) async {
+  Future<int> getKategorieIdByName(String kategorie) async {
     await _instance._initBox();
     var kategorien = _instance._kategorieBox.values;
 
-    var kategorieAusgabe = kategorien.where((element) => element.kategorie == kategorie);
-    //rezeptBox.close();
+    var kategorieAusgabe =
+        kategorien.where((element) => element.kategorie == kategorie);
 
-    if(kategorieAusgabe.isEmpty){
-     return -1;
-    }
-    else{
+    if (kategorieAusgabe.isEmpty) {
+      return -1;
+    } else {
       return kategorieAusgabe.elementAt(0).kategorie_id;
     }
-
   }
-
 
   Future<int> setKategorie(String kategorie) async {
     int kategorie_id = 0;
@@ -62,24 +57,26 @@ class ICRUDkategorieImpl implements ICRUDkategorie {
 
     var kategorienliste = _instance._kategorieBox.values;
     var kategorieVorhanden =
-    kategorienliste.where((element) => element.kategorie == kategorie);
+        kategorienliste.where((element) => element.kategorie == kategorie);
     if (kategorieVorhanden.isEmpty) {
       Kategorie kategorien =
-      Kategorie(kategorie_id: kategorie_id, kategorie: kategorie);
+          Kategorie(kategorie_id: kategorie_id, kategorie: kategorie);
       await _instance._kategorieBox.add(kategorien);
-      //await _instance._rezeptBox.close();
 
       return kategorie_id;
     } else {
       return kategorieVorhanden.elementAt(0).kategorie_id;
     }
-
   }
 
   Future<int> deleteKategorie(int kategorie_id) async {
     await _instance._initBox();
-    await _instance._kategorieBox.deleteAt(kategorie_id);
+    var kategorien = _instance._kategorieBox.values;
+    for (int i = kategorien.length - 1; i >= 0; i--) {
+      if (kategorien.elementAt(i).kategorie_id == kategorie_id) {
+        await _instance._kategorieBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
   }
 }

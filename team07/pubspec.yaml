@@ -74,6 +74,8 @@ dependencies:
   #hive database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  alan_voice: ^3.10.0
+  table_calendar: ^3.0.8
 
 
 
@@ -111,7 +113,10 @@ flutter:
     - assets/sounds/Alarm-Clock-Chickens.mp3
     - assets/sounds/Sonar-Sound.mp3
     - assets/sounds/bing.wav
-    - assets/data/Schweizer_Nahrwertdatenbank.xlsx
+    - assets/images/fried-egg-1329_512.gif
+    - assets/sounds/braten.mp3
+    - assets/data/dichteDaten.xlsx
+    - assets/data/DichteDeutsch.xlsx
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

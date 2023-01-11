@@ -13,7 +13,6 @@ class ICRUDzutats_MengeImpl implements ICRUDzutats_Menge {
   var _zutats_MengeBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_zutats_MengeBox == null)
       _zutats_MengeBox = await Hive.openBox("zutats_Menge");
   }
@@ -30,7 +29,6 @@ class ICRUDzutats_MengeImpl implements ICRUDzutats_Menge {
 
     var zutats_Menge =
         zutats_Mengen.firstWhere((element) => element.schritt_id == schrittid);
-    //rezeptBox.close();
 
     return zutats_Menge;
   }
@@ -40,31 +38,30 @@ class ICRUDzutats_MengeImpl implements ICRUDzutats_Menge {
     var zutats_Mengen = _instance._zutats_MengeBox.values;
     Zutats_Menge zutats_Menge = zutats_Mengen
         .firstWhere((element) => element.zutats_Menge_id == zutats_Menge_id);
-    //rezeptBox.close();
 
     return zutats_Menge;
   }
 
   Future<int> deleteZutatsMenge(int zutats_Menge_id) async {
     await _instance._initBox();
-    await _instance._zutats_MengeBox.deleteAt(zutats_Menge_id);
+    var zutats_Mengen = _instance._zutats_MengeBox.values;
+    for (int i = zutats_Mengen.length - 1; i >= 0; i--) {
+      if (zutats_Mengen.elementAt(i).zutats_Menge_id == zutats_Menge_id) {
+        await _instance._zutats_MengeBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
   }
 
   Future<void> deleteZutatsMengeByRezeptId(int rezept_id) async {
     await _instance._initBox();
     var schrittzutaten = _instance._zutats_MengeBox.values;
-    for(int i=schrittzutaten.length-1; i>=0; i--){
-      if(schrittzutaten.elementAt(i).rezept_id==rezept_id){
+    for (int i = schrittzutaten.length - 1; i >= 0; i--) {
+      if (schrittzutaten.elementAt(i).rezept_id == rezept_id) {
         await _instance._zutats_MengeBox.deleteAt(i);
       }
     }
-    //rezeptBox.close();
   }
-
-
-
 
   Future<int> setZutatsMenge(int rezept_id, int schritt_id, int zutaten_id,
       int teilmenge, String einheit) async {
@@ -86,7 +83,6 @@ class ICRUDzutats_MengeImpl implements ICRUDzutats_Menge {
         teilmenge: teilmenge,
         einheit: einheit);
     await _instance._zutats_MengeBox.add(zutats_Menge);
-    //await _instance._rezeptBox.close();
 
     return zutats_Menge_id;
   }

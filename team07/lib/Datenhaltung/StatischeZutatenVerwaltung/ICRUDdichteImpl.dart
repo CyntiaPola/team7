@@ -12,18 +12,20 @@ class ICRUDdichteImpl implements ICRUDdichte {
   var _dichteBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_dichteBox == null) _dichteBox = await Hive.openBox("dichte");
   }
 
-  Future<Dichte> getDichte(int zutatsname_id) async {
+  Future<Dichte?> getDichte(int zutatsname_id) async {
     await _instance._initBox();
     var dichten = _instance._dichteBox.values;
-    Dichte dichte =
-        dichten.firstWhere((element) => element.zutatsname_id == zutatsname_id);
-    //rezeptBox.close();
+    var dichte =
+        dichten.where((element) => element.zutatsname_id == zutatsname_id);
 
-    return dichte;
+    if (dichte.length > 0) {
+      return dichte.elementAt(0);
+    }
+
+    return null;
   }
 
   Future<Iterable> getDichten() async {
@@ -47,15 +49,35 @@ class ICRUDdichteImpl implements ICRUDdichte {
         zutatsname_id: zutatsname_id,
         volumen_pro_100g: volumen_pro_100g);
     await _instance._dichteBox.add(dichte);
-    //await _instance._rezeptBox.close();
 
     return dichte_id;
   }
 
   Future<int> deleteDichte(int dichte_id) async {
     await _instance._initBox();
-    await _instance._dichteBox.deleteAt(dichte_id);
+    var dichten = _instance._dichteBox.values;
+    for (int i = dichten.length - 1; i >= 0; i--) {
+      if (dichten.elementAt(i).dichte_id == dichte_id) {
+        await _instance._dichteBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
+  }
+
+  Future<void> updateDichte(
+    int dichte_id,
+    int zutatsname_id,
+    double volumen_pro_100g,
+  ) async {
+    var dichten = _instance._dichteBox.values;
+    for (int i = dichten.length - 1; i >= 0; i--) {
+      if (dichten.elementAt(i).dichte_id == dichte_id) {
+        Dichte dichte = Dichte(
+            dichte_id: dichte_id,
+            zutatsname_id: zutatsname_id,
+            volumen_pro_100g: volumen_pro_100g);
+        await _instance._dichteBox.putAt(i, dichte);
+      }
+    }
   }
 }

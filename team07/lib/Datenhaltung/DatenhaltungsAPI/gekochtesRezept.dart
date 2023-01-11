@@ -22,11 +22,15 @@ class GekochtesRezept {
   @HiveField(5)
   int status;
 
+  @HiveField(6)
+  double portion;
+
   GekochtesRezept(
       {required this.gekochtesRezept_ID,
       required this.rezept_id,
       required this.datum,
       required this.abgeschlossen,
       required this.naehrwert_id,
-      required this.status});
+      required this.status,
+      required this.portion});
 }

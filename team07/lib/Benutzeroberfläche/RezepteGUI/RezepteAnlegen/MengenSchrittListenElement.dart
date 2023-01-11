@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/RezeptAnlegenController.dart';
@@ -106,18 +107,36 @@ class MengenSchrittListenState extends State<MengenSchrittListenElement> {
               },
             )),
 
-            Expanded(child:TextFormField(
-              controller: _einheitsController,
-              // speichert bei Änderung einheit in Index i der Liste
-              onChanged: (v) => widget.stateManager.schrittNotifier.value[widget.index].einheit = v,
-              decoration: InputDecoration(
-                  hintText: 'Einheit'
-              ),
-              validator: (v){
-                if(v==null||v.trim().isEmpty) return 'Einheit leer';
-                return null;
-              },
-            ))
+
+            SizedBox (width: 70,
+                height:60,
+                child: DropdownButtonFormField<String>(
+
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 0),
+                    ),
+                    filled:false,
+                  ),
+                  dropdownColor: Colors.greenAccent,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _einheitsController.text = newValue!;
+                      widget.stateManager.schrittNotifier.value[widget.index].einheit = newValue;
+                    });
+                  },
+                  items: <String>['g', 'ml'].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    );
+                  }).toList(),
+                )),
           ],)
 
       ],);

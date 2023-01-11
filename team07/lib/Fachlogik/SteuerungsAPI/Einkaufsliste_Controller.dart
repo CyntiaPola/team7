@@ -1,13 +1,17 @@
+import 'package:flutter/cupertino.dart';
+
+import '../../Benutzeroberfläche/EinkaufeGUI/EinkaufeHome.dart';
+import '../../Datenhaltung/DatenhaltungsAPI/einkaufsliste.dart';
+
 abstract class Einkaufsliste_Controller{
+
+  List<String> getList();
 
   ///Lädt alle Einkaufslisteneinträge aus der Datenbank
   Future<void> gibEinkaufsliste();
 
   ///Speichert Liste aller Einkaufslisteneinträge der Klasse und kann Listener über Änderungen benachrichtigen
-  get einkaufslisteNotifier;
-
-  ///Speichert Liste aller Einkaufslisteneinträge, die gesuchten Begriff enthalten und kann Listener über Änderungen benachrichtigen
-  get suchlisteNotifier;
+  ValueNotifier<List<EinkaufeModel>> get einkaufslisteNotifier;
 
 
   ///Speichert bool, ob Suchbutton gedrückt wurde und kann Listener über Änderung benachrichtigen
@@ -21,8 +25,10 @@ abstract class Einkaufsliste_Controller{
   ///ist [dazu] false und die Zutat nicht in der Liste vorhanden, wird die Liste nicht aktualisiert
   void einkaufsListeAnpassen(String name, int menge, String einheit, bool dazu);
 
+  void einkaufsListeAnpassenFrom(EinkaufeModel einkaufeModel);
+
   ///Löscht den Eintrag an der [index]-ten Stelle der Liste  [EinkaufslisteNotifier]
-  void loeschen(int index);
+  void loeschen(int id);
 
 
   ///Übernimmt die Änderungen an der Einkaufsliste in die Datenbank

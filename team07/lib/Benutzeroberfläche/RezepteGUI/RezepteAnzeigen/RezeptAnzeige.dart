@@ -16,6 +16,7 @@ class RezeptAnzeige extends StatefulWidget {
   final stateManager = getIt<RezeptAnzeigenController>();
   final stateManagerRezeptSuche = getIt<Rezeptbuch_Controller>();
 
+
   bool inAusfuehrung;
   String suchtitel;
   List<String> suchKategorien;
@@ -138,7 +139,7 @@ class RezeptAnzeigenState extends State<RezeptAnzeige> {
                             child: TextFormField(
                               readOnly: widget.inAusfuehrung,
                               onChanged: (text) => {
-                                if (text.contains(RegExp("[^0123456789]")))
+                                if (text.contains(RegExp("[^0123456789.]")))
                                   {_portionenController.text = "1"}
                                 else
                                   {
@@ -272,44 +273,73 @@ class RezeptAnzeigenState extends State<RezeptAnzeige> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 6.0, top: 0, right: 6.0, bottom: 0),
-            child: DataTable(
-                columns: <DataColumn>[
-                  DataColumn(
-                    label: Text("Menge"),
-                  ),
-                  DataColumn(
-                    label: Text("Zutat"),
-                  ),
-                  DataColumn(
-                    label: Text(""),
-                  ),
-                ],
-                rows: widget.stateManager
-                    .zutatenGeben()
-                    .map(
-                      (zutat) => DataRow(
-                        cells: [
-                          DataCell(
-                            Text('${zutat.menge}${zutat.einheit}'),
-                          ),
-                          DataCell(
-                            Text('${zutat.name}'),
-                          ),
-                          DataCell(
-                            Text(''),
-                          ),
-                        ],
-                      ),
-                    )
-                    .toList()),
-          ),
+          Row(
+              children:[
+            Padding(
+                  padding: EdgeInsets.only(left: 0.0, top: 0, right: 0.0, bottom: 0),
+                  child: DataTable(
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: Text("Menge"),
+                        ),
+                        DataColumn(
+                          label: Text("Zutat"),
+                        ),
+                        DataColumn(
+                          label: Text(""),
+                        ),
+                      ],
+                      rows: widget.stateManager
+                          .zutatenGeben()
+                          .map(
+                            (zutat) => DataRow(
+                          cells: [
+                            DataCell(
+                              Text('${zutat.menge}${zutat.einheit}'),
+                            ),
+                            DataCell(
+                              Text('${zutat.name}'),
+                            ),
+                            DataCell(
+                              Text(''),
+                            ),
+                          ],
+                        ),
+                      )
+                          .toList()),
+                ),
+                widget.stateManager.vorratskammerVerwenden ?
+                Padding(
+                  padding: EdgeInsets.only(left: 0.0, top: 0, right: 0.0, bottom: 0),
+                  child: DataTable(
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: Text("fehlt"),
+                        ),
+                      ],
+                      rows: widget.stateManager
+                          .gibZutatenDifferenzen()
+                          .map(
+                            (zutat) => DataRow(
+                          cells: [
+                            DataCell(
+                              Text("$zutat",
+                              style: TextStyle(color: zutat>0? Colors.red : Colors.green),),
+
+                            ),
+                          ],
+                        ),
+                      )
+                          .toList()),
+                ) : Container(),]),
         ]);
   }
 
+
   Widget _naehrwertliste() {
-    return ExpansionTile(
+
+
+    return widget.stateManager.naehrwerteAnzeigen?  ExpansionTile(
         title: Text(
           "Nährwerte",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -399,7 +429,7 @@ class RezeptAnzeigenState extends State<RezeptAnzeige> {
                   ]),
                 ])),
           ),
-        ]);
+        ]): Container();
   }
 
   Widget _schrittliste(List<Schritte_Rezeptanzeige> list) {

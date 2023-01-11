@@ -53,4 +53,11 @@ abstract class PlaeneRezeptAnzeigenController{
   List<Schritte_Rezeptanzeige> schritteGeben();
 
 
+  Future<int> loeschen();
+
+  get naehrwertNotifier;
+  get naehrwerteAnzeigen;
+  get gekochtesRezept;
+
+
 }

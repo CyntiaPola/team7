@@ -23,13 +23,14 @@ class GekochtesRezeptAdapter extends TypeAdapter<GekochtesRezept> {
       abgeschlossen: fields[3] as bool,
       naehrwert_id: fields[4] as int,
       status: fields[5] as int,
+      portion: fields[6] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, GekochtesRezept obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.gekochtesRezept_ID)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class GekochtesRezeptAdapter extends TypeAdapter<GekochtesRezept> {
       ..writeByte(4)
       ..write(obj.naehrwert_id)
       ..writeByte(5)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..writeByte(6)
+      ..write(obj.portion);
   }
 
   @override

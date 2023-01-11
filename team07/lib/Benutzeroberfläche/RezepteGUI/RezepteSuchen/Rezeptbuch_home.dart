@@ -28,6 +28,7 @@ class Rezeptbuch_home extends StatefulWidget {
   final stateManager2 = getIt<RezeptAnzeigenController>();
   final stateManagerAdden= getIt<RezeptAnlegenController>();
 
+
   @override
   State<Rezeptbuch_home> createState() => _Rezeptbuch_homeState();
 }
@@ -365,6 +366,10 @@ class _Rezeptbuch_homeState extends State<Rezeptbuch_home> {
   }
 
   Future<void> settings(int bluetoothzustand) async {
+    widget.settingsManager.gibToleranzbereich();
+    widget.settingsManager.gibNaehrwerteAnzeigen();
+    widget.settingsManager.gibVorratskammerNutzen();
+
     showMenu<int>(
         context: context,
         color: Colors.green,
@@ -390,6 +395,7 @@ class _Rezeptbuch_homeState extends State<Rezeptbuch_home> {
                           onChanged: (bool? value) {
                             widget.settingsManager.vorratsNotifier.value =
                                 value;
+                            widget.settingsManager.settingsSpeichern();
                             setState(() {});
                           }),
                     ]);
@@ -406,6 +412,7 @@ class _Rezeptbuch_homeState extends State<Rezeptbuch_home> {
                           onChanged: (bool? value) {
                             widget.settingsManager.naehrwertsNotifier.value =
                                 value;
+                            widget.settingsManager.settingsSpeichern();
                             setState(() {});
                           }),
                     ]);
@@ -427,6 +434,7 @@ class _Rezeptbuch_homeState extends State<Rezeptbuch_home> {
                             onChanged: (v) {
                               widget.settingsManager.toleranzNotifier.value =
                                   int.parse(v);
+                              widget.settingsManager.settingsSpeichern();
 
                             },
                             controller: wiegetoleranzcontroller,

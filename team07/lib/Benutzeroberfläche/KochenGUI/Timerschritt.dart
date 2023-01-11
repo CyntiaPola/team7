@@ -1,6 +1,7 @@
 import 'dart:async';
 
 
+import 'package:alan_voice/alan_voice.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_value_listenable_builder/multi_value_listenable_builder.dart';
@@ -33,11 +34,35 @@ class TimerschrittState extends State<Timerschritt> {
 
 
 
+  Future<void> _handelCommand (Map<String, dynamic> command) async {
 
+    switch (command["command"]) {
+      case "next":
+
+
+        widget.stateManager.aktuellerSchrittSetzen(widget.stateManager.schrittnotifier.value+1);
+
+
+        widget.kochen_controller.schrittschonmalgestartet.value=false;
+        widget.kochen_controller.gekochtesRezeptAktualisieren(-1, "", false);
+        await widget.kochen_controller.gibBerechneteNaehrwerte();
+        await widget.kochen_controller.DichteLaden();
+
+        break;
+      default:
+        debugPrint("Unknown command");
+        break;
+    }
+  }
 
 
   @override
   void initState() {
+
+
+    AlanVoice.onCommand.clear();
+
+    AlanVoice.onCommand.add((command) => _handelCommand(command.data));
     _countereditor2 = new TextEditingController();
     _countereditor1 = new TextEditingController();
     schritt = widget.stateManager.aktuellerSchrittGeben();
@@ -69,6 +94,9 @@ class TimerschrittState extends State<Timerschritt> {
 
   @override
   Widget build(BuildContext context) {
+    AlanVoice.activate();
+
+
     if(widget.kochen_controller.schrittschonmalgestartet.value==false) {
       schritt = widget.stateManager.aktuellerSchrittGeben();
       widget.kochen_controller.count2Notifier.value = schritt.zusatzwert;
@@ -171,12 +199,15 @@ class TimerschrittState extends State<Timerschritt> {
               width: 150,
               height: 50,
 
-                  child: ElevatedButton(onPressed: ()  {
+                  child: ElevatedButton(onPressed: ()  async {
 
                     widget.stateManager.aktuellerSchrittSetzen(widget.stateManager.schrittnotifier.value+1);
 
 
                     widget.kochen_controller.schrittschonmalgestartet.value=false;
+                    widget.kochen_controller.gekochtesRezeptAktualisieren(-1, "", false);
+                    await widget.kochen_controller.gibBerechneteNaehrwerte();
+                    await widget.kochen_controller.DichteLaden();
 
 
                   }, child:Text("Ausgeführt",

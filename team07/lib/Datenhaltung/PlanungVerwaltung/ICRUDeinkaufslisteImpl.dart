@@ -13,7 +13,6 @@ class ICRUDeinkaufslisteImpl implements ICRUDeinkaufsliste {
   var _einkaufslisteBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_einkaufslisteBox == null)
       _einkaufslisteBox = await Hive.openBox("einkaufsliste");
   }
@@ -29,16 +28,19 @@ class ICRUDeinkaufslisteImpl implements ICRUDeinkaufsliste {
     var einkaufslisten = _instance._einkaufslisteBox.values;
     Einkaufsliste einkaufsliste = einkaufslisten
         .firstWhere((element) => element.einkaufsliste_id == einkaufsliste_id);
-    //rezeptBox.close();
 
     return einkaufsliste;
   }
 
   Future<int> deleteEinkaufsliste(int einkaufsliste_id) async {
     await _instance._initBox();
-    await _instance._einkaufslisteBox.deleteAt(einkaufsliste_id);
+    var einkaufslisten = _instance._einkaufslisteBox.values;
+    for (int i = einkaufslisten.length - 1; i >= 0; i--) {
+      if (einkaufslisten.elementAt(i).einkaufsliste_id == einkaufsliste_id) {
+        await _instance._einkaufslisteBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
   }
 
   Future<int> setEinkaufsliste(
@@ -60,8 +62,28 @@ class ICRUDeinkaufslisteImpl implements ICRUDeinkaufsliste {
         menge: menge,
         einheit: einheit);
     await _instance._einkaufslisteBox.add(einkaufsliste);
-    //await _instance._rezeptBox.close();
 
     return einkaufsliste_id;
+  }
+
+  Future<void> updateEinkaufsliste(
+    int einkaufsliste_id,
+    int zutatsname_id,
+    int rezept_id,
+    int menge,
+    String einheit,
+  ) async {
+    var einkaufslisten = _instance._einkaufslisteBox.values;
+    for (int i = einkaufslisten.length - 1; i >= 0; i--) {
+      if (einkaufslisten.elementAt(i).einkaufsliste_id == einkaufsliste_id) {
+        Einkaufsliste einkaufsliste = Einkaufsliste(
+            einkaufsliste_id: einkaufsliste_id,
+            zutatsname_id: zutatsname_id,
+            rezept_id: rezept_id,
+            menge: menge,
+            einheit: einheit);
+        await _instance._einkaufslisteBox.putAt(i, einkaufsliste);
+      }
+    }
   }
 }

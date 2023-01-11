@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:smart_waage/Fachlogik/SteuerungsAPI/GekochtesRezept.dart';
+import 'package:smart_waage/Fachlogik/SteuerungsAPI/GekochtesRezeptGrenzklasse.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/Zutat_Rezeptanzeige.dart';
 import '../../Datenhaltung/DatenhaltungsAPI/rezept.dart';
 import '../SteuerungsAPI/Schritte_Rezeptanzeige.dart';
@@ -63,12 +63,6 @@ abstract class KochenRezeptAnzeigenController{
   ///Lädt anhand der [rezeptid] alle Daten zu dem Rezept in den Controller.
   Future<void> RezeptHolen(int rezeptid);
 
-  ///Setzt die Daten des aktuellen Rezepts auf die übergebenen Werte
-  ///Übernimmt zusätzlich noch ein bereits vorhandenes GekochtesRezept, wie es beim Wechsel von PLäneGUI auf Kochen bereits vorliegt
-  ///Diese Methode wird von Steuerungsklassen aufgerufen, wenn in ihrer zugehörigen GUI der Kochenbutton geklickt wird
-  ///So erhält die KochenSteuerung die Daten zum gewünschten Rezept
-  void RezeptSetzenMitGekochtesRezept(Rezept rezept, List<Schritte_Rezeptanzeige> schrittliste, int schrittzaehler,  List<String> zutatennamen , List<Zutat_Rezeptanzeige> zutatenliste, double aktuelleportion, List<String> kategorienliste , GekochtesRezept gekochtesRezept);
-
 
   ///gibt eine Liste der Zutaten des aktuellen Rezepts mit
   ///String name
@@ -88,8 +82,7 @@ abstract class KochenRezeptAnzeigenController{
   ///   zurück
   List<Schritte_Rezeptanzeige> schritteGeben();
 
+  void portionSetzen(double aktuellePortion);
 
-  ///Setzt das aktuell GekochteRezept auf [gekochtesRezept]
-  void GekochtesRezeptSetzen(GekochtesRezept gekochtesRezept);
 
 }

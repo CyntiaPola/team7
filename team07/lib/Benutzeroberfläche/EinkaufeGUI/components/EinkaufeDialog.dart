@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_waage/Benutzeroberfl%C3%A4che/EinkaufeGUI/EinkaufeHome.dart';
+import 'package:smart_waage/Benutzeroberfl%C3%A4che/EinkaufeGUI/util.dart';
+import 'package:smart_waage/Fachlogik/SteuerungsAPI/Einkaufsliste_Controller.dart';
+
+import '../../../Fachlogik/service_locator.dart';
 
 
 
-Future<EinkaufeModel?> addEinkaufItemDialog(BuildContext context) async {
+Future<EinkaufeModel?> addEinkaufItemDialog(BuildContext context,EinkaufeModel   einkaufeModel) async {
   return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return Dialog(
@@ -14,89 +19,179 @@ Future<EinkaufeModel?> addEinkaufItemDialog(BuildContext context) async {
           ),
           elevation: 6,
           backgroundColor: Colors.transparent,
-          child: _DialogWithTextField(context),
+          child: _DialogWithTextField(context,einkaufeModel),
         );
       });
 }
 
-Widget _DialogWithTextField(BuildContext context) {
-  final nameController = TextEditingController();
-  final mengeController = TextEditingController();
-  final einheitController = TextEditingController();
+Widget _DialogWithTextField(BuildContext context,EinkaufeModel einkaufeModel) {
+
+
+  final mengeController = TextEditingController(text: '${einkaufeModel.weight}');
+
+  final statemanager = getIt<Einkaufsliste_Controller>();
+
+  Einheit? dropdownValue = Einheit.fromEinkaufeModel(einkaufeModel);
+
+  String zutatName = einkaufeModel.name;
   return Container(
 
-  height: 280,
-  decoration: const BoxDecoration(
-    color:  Colors.white,
-    shape: BoxShape.rectangle,
-    borderRadius: BorderRadius.all(Radius.circular(12)),
-  ),
+
+    constraints: const BoxConstraints(minWidth: 100, maxWidth: 500,maxHeight: 500),
+    decoration: const BoxDecoration(
+      color:  Colors.white,
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
+
   child: Column(
     children: <Widget>[
-      const SizedBox(height: 5),
-      Text(
-        "ADD Item".toUpperCase(),
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 17,
-        ),
-      ),
-      const SizedBox(height: 5),
-      Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
-          child: TextFormField(
-            controller: nameController,
-            maxLines: 1,
-            autofocus: false,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Name',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-          )
-      ),
 
-      Padding(
-          padding: const EdgeInsets.only(top: 10, right: 15, left: 15),
-          child: TextFormField(
-            controller: mengeController,
-            maxLines: 1,
-            autofocus: false,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-            decoration: InputDecoration(
-              labelText: 'Menge',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-          )
-      ),
-      const SizedBox(height: 5),
+      Expanded(
+          child:
+          Column(
 
-      Padding(
-          padding: const EdgeInsets.only(top: 10, right: 15, left: 15),
-          child: TextFormField(
-            controller: einheitController,
-            maxLines: 1,
-            autofocus: false,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Einheit',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            ),
-          )
-      ),
-      const SizedBox(height: 10),
+              children: <Widget>[
+                const SizedBox(height: 5),
+                Text(
+                  "ADD Item".toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+                const SizedBox(height: 5),
 
+
+                Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10, right: 15, left: 15),
+                    child: RawAutocomplete<String>(
+                      fieldViewBuilder:
+                      ((context, textEditingController, focusNode, onFieldSubmitted) =>
+                          TextFormField( // exposed text field
+                            controller: textEditingController,
+                            maxLines: 1,
+                            autofocus: false,
+                            keyboardType: TextInputType.text,
+                            focusNode: focusNode,
+                            onFieldSubmitted: (String value) {
+                              onFieldSubmitted();
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          )),
+
+                      optionsViewBuilder: (BuildContext context,
+                          AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+                        return Align(
+                          alignment: Alignment.topLeft,
+                          child: Material(
+                            elevation: 4.0,
+                            child: Container(
+                              height: 200.0,
+                              constraints: const BoxConstraints(minWidth: 100, maxWidth: 400),
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(8.0),
+                                itemCount: options.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final String option = options.elementAt(index);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      onSelected(option);
+                                    },
+                                    child: ListTile(
+                                      title: Text(option),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+
+                      optionsBuilder: (textEditingValue) {
+                        return statemanager.getList().where((String option) {
+                          return option.contains(textEditingValue.text);
+                        });
+                      },
+
+                      onSelected: (value){
+                        zutatName = value;
+                      },
+                    )
+                ),
+
+
+                Padding(
+                    padding: const EdgeInsets.only(top: 10, right: 15, left: 15),
+                    child: TextFormField(
+                      controller: mengeController,
+                      maxLines: 1,
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Menge',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    )
+                ),
+
+                const SizedBox(height: 5),
+
+                Padding(
+                    padding: const EdgeInsets.only(top: 10, right: 15, left: 15),
+
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: <Widget>[
+                        const Text(
+                          'Einheit',
+                          style: TextStyle(),
+                          textAlign: TextAlign.left,
+                        ),
+                     DropdownButtonFormField<Einheit>(
+
+                         value: dropdownValue,
+                         onChanged: (Einheit? newValue) {
+                           dropdownValue = newValue;
+                         },
+                         items: EinheitArrays
+                             .map<DropdownMenuItem<Einheit>>((Einheit einheit) {
+                           return DropdownMenuItem<Einheit>(
+                             value: einheit,
+                             child: Text(einheit.value),
+                           );
+                         }).toList(),
+                         validator: (Einheit? value) {
+                           if (value == null) {
+                             return 'Must make a selection.';
+                           }
+                           return null;
+                         },
+                       )],
+                    )
+
+
+                ),
+                const SizedBox(height: 10)
+              ]
+          ),
+
+      ),
 
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -107,7 +202,8 @@ Widget _DialogWithTextField(BuildContext context) {
               child :ElevatedButton(
 
                 onPressed: () {
-                  Navigator.of(context).pop(EinkaufeModel(AUTO_ID++,nameController.text, int.parse(mengeController.text), einheitController.text));
+
+                  Navigator.of(context).pop(EinkaufeModel(einkaufeModel.id,zutatName, int.parse(mengeController.text), dropdownValue?.value??''));
                 },
                 style: ElevatedButton.styleFrom(
 
@@ -118,20 +214,20 @@ Widget _DialogWithTextField(BuildContext context) {
                 child: Text("Save".toUpperCase()),
               )),
 
-          const SizedBox(width: 8),
+          const SizedBox(width: 20),
           ConstrainedBox(
               constraints: const BoxConstraints.tightFor(height: 40),
               child :ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.redAccent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(2), // <-- Radius
                   ),
                 ),
+                child: const Text('Cancel'),
               )),
 
 
@@ -139,14 +235,17 @@ Widget _DialogWithTextField(BuildContext context) {
 
         ],
       ),
+      const SizedBox(height: 10),
     ],
   ),
+
 );
 }
 
 
 Future<bool?> deleteItem(BuildContext context) async {
   return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext ctx) {
         return AlertDialog(

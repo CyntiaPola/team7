@@ -21,6 +21,13 @@ abstract class SettingsController{
   ///4 - Pläne
   get pageNotifier;
 
+  get schrittnotifier => null;
+
+
+
+
+
+
   ///Leitet das Wechsel der Tabs abhängig von [index] ein :
   ///0 - Vorratskammer
   ///1 - Einkaufsliste
@@ -31,7 +38,23 @@ abstract class SettingsController{
   void onItemTapped(int index);
 
 
-  ///Speichert den vom Nutzer eingegebenen Toleranzbereich persistent in DB ein
-  void toleranzbereichSpeichern( int toleranzbereich);
+  ///Speichert die vom Nutzer eingegebenen Settings persistent in der Datenbank ab
+  void settingsSpeichern();
+
+
+  Future<int> gibToleranzbereich();
+
+  Future<bool> gibVorratskammerNutzen() ;
+
+  Future<bool> gibNaehrwerteAnzeigen() ;
+
+  Future<int> gibLetzteRezeptId() ;
+
+  void setzeLetzteRezeptId(int letzteRezeptId);
+
+  Future<bool> DichteLaden();
 
 }
+
+
+

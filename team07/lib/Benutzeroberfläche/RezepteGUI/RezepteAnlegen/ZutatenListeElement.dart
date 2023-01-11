@@ -94,7 +94,7 @@ class _ZutatenListenElementState extends State<ZutatenListenElement> {
       widget.stateManager.zutatenNotifier.value[widget.index].einheit = newValue;
     });
     },
-    items: <String>['g', 'ml'].map<DropdownMenuItem<String>>((String value) {
+    items: <String>['g', 'ml', 'Stück', 'Prise'].map<DropdownMenuItem<String>>((String value) {
     return DropdownMenuItem<String>(
     value: value,
     child: Text(

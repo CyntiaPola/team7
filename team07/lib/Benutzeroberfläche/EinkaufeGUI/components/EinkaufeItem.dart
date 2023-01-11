@@ -13,21 +13,21 @@ class EinkaufeItem  extends StatefulWidget {
 
   VoidCallback myVoidCallback;
 
-  @override
-  EinkaufeItemState createState() {
-     return EinkaufeItemState(einkaufeModel,this.myVoidCallback);
-  }
 
   EinkaufeItem(this.einkaufeModel, this.myVoidCallback, {super.key});
+
+  @override
+  State<EinkaufeItem> createState() => EinkaufeItemState();
+
 }
 
 class EinkaufeItemState extends State<EinkaufeItem> {
 
-  EinkaufeModel einkaufeModel;
 
-  VoidCallback myVoidCallback;
-
-
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -44,11 +44,11 @@ class EinkaufeItemState extends State<EinkaufeItem> {
               child:  SizedBox(
                 height: 16.0,
                 width: 16.0,
-                child:Checkbox(value: einkaufeModel.isChecked,
+                child:Checkbox(value: widget.einkaufeModel.isChecked,
                   // activeColor: Colors.green,
                   onChanged: (bool? newValue) {
                     setState(() {
-                      einkaufeModel.isChecked = newValue!;
+                      widget.einkaufeModel.isChecked = newValue!;
                     });
                   },
                 ),
@@ -61,7 +61,7 @@ class EinkaufeItemState extends State<EinkaufeItem> {
             child: Container( alignment: Alignment.centerLeft,
                 height:MediaQuery.of(context).size.height ,
                 // color: Colors.red,
-                child: Text(einkaufeModel.name)),
+                child: Text(widget.einkaufeModel.name)),
           ),
 
           Expanded(
@@ -70,7 +70,7 @@ class EinkaufeItemState extends State<EinkaufeItem> {
                 height:MediaQuery.of(context).size.height,
               // color: Colors.green,
                 alignment: Alignment.centerLeft,
-                child: Text(einkaufeModel.weight.toString()),
+                child: Text(widget.einkaufeModel.weight.toString()),
             ),
           ),
           Expanded(
@@ -79,7 +79,7 @@ class EinkaufeItemState extends State<EinkaufeItem> {
                 height:MediaQuery.of(context).size.height,
                 // color: Colors.blue,
                 alignment: Alignment.centerLeft,
-                child: Text(einkaufeModel.unit)
+                child: Text(widget.einkaufeModel.unit)
             ),
           ),
           Expanded(
@@ -87,7 +87,7 @@ class EinkaufeItemState extends State<EinkaufeItem> {
           child :
             RawMaterialButton(
             onPressed: () {
-              myVoidCallback.call();
+              widget.myVoidCallback.call();
             },
             fillColor: Colors.white,
             shape: const CircleBorder(),
@@ -102,5 +102,4 @@ class EinkaufeItemState extends State<EinkaufeItem> {
     );
   }
 
-  EinkaufeItemState(this.einkaufeModel, this.myVoidCallback);
 }

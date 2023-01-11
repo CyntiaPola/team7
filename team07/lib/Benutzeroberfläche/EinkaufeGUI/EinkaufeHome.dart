@@ -1,14 +1,8 @@
-import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:smart_waage/Benutzeroberfl%C3%A4che/EinkaufeGUI/components/EinkaufeItem.dart';
-
-import '../../Fachlogik/SteuerungsAPI/RezeptAnlegenController.dart';
-import '../../Fachlogik/SteuerungsAPI/RezeptAnzeigenController.dart';
-import '../../Fachlogik/SteuerungsAPI/Rezeptbuch_Controller.dart';
-import '../../Fachlogik/SteuerungsAPI/SettingsController.dart';
+import 'package:smart_waage/Fachlogik/SteuerungsAPI/Einkaufsliste_Controller.dart';
 import '../../Fachlogik/service_locator.dart';
 import 'components/EinkaufeDialog.dart';
 import 'components/EinkaufeHeader.dart';
@@ -16,12 +10,12 @@ import 'components/EinkaufeHeader.dart';
 
 
 class EinkaufeHome extends StatefulWidget {
+
 String title = "Einkaufe";
 
-final stateManager = getIt<Rezeptbuch_Controller>();
-final settingsManager = getIt<SettingsController>();
-final stateManager2 = getIt<RezeptAnzeigenController>();
-final stateManagerAdden= getIt<RezeptAnlegenController>();
+
+final einkaufslisteManager = getIt<Einkaufsliste_Controller>();
+
 
 @override
 State<EinkaufeHome> createState() => EinkaufeHomeState();
@@ -29,16 +23,18 @@ State<EinkaufeHome> createState() => EinkaufeHomeState();
 }
 
 
-int AUTO_ID = 0;
+int AUTO_ID = 90000;
 
 class EinkaufeModel{
-   String name;
-   int weight;
-   String unit;
-   bool isChecked = false;
-   int id;
+    String name;
+    int weight;
+    String unit;
+    bool isChecked = false;
+    int id;
 
    EinkaufeModel(this.id,this.name,this.weight,this.unit);
+
+
 
    @override
   String toString() {
@@ -47,12 +43,21 @@ class EinkaufeModel{
 }
 
 class EinkaufeHomeState extends State<EinkaufeHome> {
-  final List<EinkaufeModel> einkaufeLists = <EinkaufeModel>[
 
-];
+
 
   @override
+  void initState() {
+    // widget.statemanager.init();
+    widget.einkaufslisteManager.gibEinkaufsliste();
+
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
+
+    TextEditingController searchController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(title: const Text("EinkaufeListe")),
       body:
@@ -70,16 +75,22 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
                 decoration: BoxDecoration(
                     color: Colors.white, borderRadius: BorderRadius.circular(5)),
                 child: Center(
+                  // Suchen
                   child: TextField(
+                    controller: searchController,
+                    autofocus: true,
+                    onChanged:  onSearchTextChanged,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.search),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: () {
-                            /* Clear the search field */
+                            searchController.clear();
+                            onSearchTextChanged("");
                           },
                         ),
-                        hintText: 'Gesuchte Zutet',
+                        hintText: 'Gesuchte Zutat',
                         border: InputBorder.none),
                   ),
                 ),
@@ -89,30 +100,8 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
               Expanded(
                 flex: 1,
                 child:
-                     ListView.builder(
-                        itemCount: einkaufeLists.length,
-
-                        itemBuilder: (BuildContext context, int index) {
-
-                          return Align( // wrap card with Align
-                             child: SizedBox(
-                                width: MediaQuery.of(context).size.width ,
-                                child: Card(
-                                    child: EinkaufeItem(einkaufeLists[index],()=>{
-                                      deleteItem(context).then((value) => {
-                                        if(value!){
-                                          einkaufeLists.remove(einkaufeLists[index]),
-                                          setState(() { })
-                                        }
-                                      })
-
-
-                                    })
-                                )),
-                          );
-
-                        })
-              ),
+                    buildEinkaufList()
+                ),
 
               Container(
                 height: 40,
@@ -122,26 +111,28 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
                   children: [
 
                     ConstrainedBox(
-                    constraints: const BoxConstraints.tightFor(height: 40),
-                    child :ElevatedButton(
+                        constraints: const BoxConstraints.tightFor(height: 40),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            addEinkaufItemDialog(context,EinkaufeModel(-1, "", 0, "")).then((value) => {
 
-                      onPressed: () {
-                        addEinkaufItemDialog(context).then((value) => {
-                          print(value.toString()),
-                          einkaufeLists.add(value!),
-                          setState(() {
+                              if(value != null){
+                                setState(() {
+                                  widget.einkaufslisteManager.einkaufsListeAnpassenFrom(value);
+                                }),
+                              }
 
-                          })
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(2), // <-- Radius
-                        ),
-                      ),
-                      child: const Text('Abbreichen'),
-                    )),
+                            });
+                          },
+                          icon: const Icon(Icons.add, size: 30),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 76, 175, 80),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          label: Text("Zutat"),
+                        )),
 
                     Spacer(),
 
@@ -153,7 +144,7 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
 
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
+                            backgroundColor: const Color.fromARGB(255, 76, 175, 80),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(2), // <-- Radius
                             ),
@@ -174,6 +165,56 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
 
       )
     );
+  }
+
+
+
+  buildEinkaufList(){
+    return ValueListenableBuilder(
+        valueListenable: widget.einkaufslisteManager.einkaufslisteNotifier,
+        builder: (BuildContext context, List<EinkaufeModel> einkaufList, Widget? child) {
+          return  ListView.builder(
+              itemCount: widget.einkaufslisteManager.einkaufslisteNotifier.value.length,
+
+              itemBuilder: (BuildContext context, int index) {
+
+                print("einkaufList");
+                print(einkaufList);
+
+                return Align( // wrap card with Align
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width ,
+                      child: Card(
+                          child: EinkaufeItem(einkaufList.elementAt(index),()=>{
+                            deleteItem(context).then((value) => {
+                              if(value!){
+                                //einkaufeLists.remove(einkaufeLists[index]),
+                                setState(() { })
+                              }
+                            })
+
+
+                          })
+                      )),
+                );
+
+              });
+        });
+  }
+
+  void checkEinkaufItem(int id) {
+    final List<EinkaufeModel> einkaufList = [...widget.einkaufslisteManager.einkaufslisteNotifier.value];
+
+    final int index = einkaufList.indexWhere((einkaufModel) => einkaufModel.id == id);
+    einkaufList[index].isChecked = !einkaufList[index].isChecked;
+
+    widget.einkaufslisteManager.einkaufslisteNotifier.value = einkaufList;
+  }
+
+
+  onSearchTextChanged(String zutat) async {
+
+    widget.einkaufslisteManager.suchen(zutat);
   }
 
 }

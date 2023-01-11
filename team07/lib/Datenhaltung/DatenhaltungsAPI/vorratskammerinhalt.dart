@@ -11,7 +11,7 @@ class Vorratskammerinhalt {
   int zutatsname_id;
 
   @HiveField(2)
-  bool menge;
+  int menge;
 
   @HiveField(3)
   String einheit;

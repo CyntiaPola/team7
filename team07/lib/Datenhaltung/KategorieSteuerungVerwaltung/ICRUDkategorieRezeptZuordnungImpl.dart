@@ -14,7 +14,6 @@ class ICRUDkategorieRezeptZuordnungImpl
   var _kategorieRezeptZuordnungBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_kategorieRezeptZuordnungBox == null)
       _kategorieRezeptZuordnungBox =
           await Hive.openBox("kategorieRezeptZuordnung");
@@ -35,44 +34,34 @@ class ICRUDkategorieRezeptZuordnungImpl
     KategorieRezeptZuordnung kategorieRezeptZuordnung =
         kategorieRezeptZuordnungen.firstWhere(
             (element) => element.kr_zuordnung_id == kr_zuordnung_id);
-    //rezeptBox.close();
-
     return kategorieRezeptZuordnung;
   }
 
   Future<int> deleteKategorieRezeptZuordnungNachRezeptId(int rezept_id) async {
     await _instance._initBox();
-    var kategorieRezeptZuordnung = _instance._kategorieRezeptZuordnungBox.values;
-    for(int i=kategorieRezeptZuordnung.length-1; i>=0; i--){
-      if(kategorieRezeptZuordnung.elementAt(i).rezept_id==rezept_id){
+    var kategorieRezeptZuordnung =
+        _instance._kategorieRezeptZuordnungBox.values;
+    for (int i = kategorieRezeptZuordnung.length - 1; i >= 0; i--) {
+      if (kategorieRezeptZuordnung.elementAt(i).rezept_id == rezept_id) {
         await _instance._kategorieRezeptZuordnungBox.deleteAt(i);
       }
     }
     return 0;
-    //rezeptBox.close();
   }
 
-  Future<Iterable> getKategorieRezeptZuordnungByRezeptID(
-      int rezeptid) async {
+  Future<Iterable> getKategorieRezeptZuordnungByRezeptID(int rezeptid) async {
     await _instance._initBox();
     var kategorieRezeptZuordnungen =
         _instance._kategorieRezeptZuordnungBox.values;
 
-    var kategorieRezeptZuordnung=[];
-    for(int i=0; i< kategorieRezeptZuordnungen.length; i++){
-      if(kategorieRezeptZuordnungen.elementAt(i).rezept_id==rezeptid){
+    var kategorieRezeptZuordnung = [];
+    for (int i = 0; i < kategorieRezeptZuordnungen.length; i++) {
+      if (kategorieRezeptZuordnungen.elementAt(i).rezept_id == rezeptid) {
         kategorieRezeptZuordnung.add(kategorieRezeptZuordnungen.elementAt(i));
       }
     }
-
-
-    //rezeptBox.close();
-
-
-
     return kategorieRezeptZuordnung;
   }
-
 
   Future<int> setKategorieRezeptZuordnung(
       int kategorie_id, int rezept_id) async {
@@ -91,15 +80,18 @@ class ICRUDkategorieRezeptZuordnungImpl
         kategorie_id: kategorie_id,
         rezept_id: rezept_id);
     await _instance._kategorieRezeptZuordnungBox.add(kategorien);
-    //await _instance._rezeptBox.close();
 
     return kategorie_id;
   }
 
   Future<int> deleteKategorieRezeptZuordnung(int kr_zuordnung_id) async {
     await _instance._initBox();
-    await _instance._kategorieRezeptZuordnungBox.deleteAt(kr_zuordnung_id);
+    var kr_zuordnungen = _instance._kategorieRezeptZuordnungBox.values;
+    for (int i = kr_zuordnungen.length - 1; i >= 0; i--) {
+      if (kr_zuordnungen.elementAt(i).kr_zuordnung_id == kr_zuordnung_id) {
+        await _instance._kategorieRezeptZuordnungBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
   }
 }

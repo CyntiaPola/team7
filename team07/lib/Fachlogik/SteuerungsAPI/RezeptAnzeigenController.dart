@@ -52,7 +52,8 @@ abstract class RezeptAnzeigenController{
   ///Löscht das aktuelle Rezept und alle Daten die seine Rezeptid beinhalten aus der Datenbank
   Future<int> loeschen();
 
-  ///Übergibt die Daten des aktuellen Rezepts an die KochenSteuerung Komponente und führt Wechsel zu Kochentab herbei
+  ///Übergibt die Daten des aktuellen Rezepts an die KochenSteuerung Komponente, regt Anlegen eines neuen gekochtesRezepts an,
+  /// speichert dessen Id als zuletzt gekochtes Rezept in den Settings ab und führt Wechsel zu Kochentab herbei
   void kochen();
 
 
@@ -75,7 +76,7 @@ abstract class RezeptAnzeigenController{
 
 
   ///Erstellt mit dem Wunschdatum der Ausführung [datum] und den bereits geladenen Daten des Rezepts ein GekochtesRezept , übergibt dies an die PläneSteuerung Komponente und führt Wechsel zu Plänetab herbei
-  void planen(DateTime datum);
+  Future<int> planen(DateTime datum);
 
 
 
@@ -105,6 +106,11 @@ abstract class RezeptAnzeigenController{
   ///Gibt die Rezeptid des angezeigten Rezepts zurück
   int rezeptidGeben();
 
+  ///Leitet den Tabwechsel vom RezepteTab auf den PläneTab ein
+  wochenplanAnzeigen();
+
+
+
   get inAusfuehrung;
   get gesucht;
   get suchtitel;
@@ -112,6 +118,10 @@ abstract class RezeptAnzeigenController{
   get suchAusschlussZutaten;
   get einkaufslisteNotifier;
   get naehrwertNotifier;
+  get naehrwerteAnzeigen;
+  get vorratskammerVerwenden;
+
+  List<int> gibZutatenDifferenzen ();
 
   void SetzeInAusfuehrung(bool inAusfuehrung);
   void SetzeGesucht(bool gesucht);
@@ -122,6 +132,7 @@ abstract class RezeptAnzeigenController{
   DateTime? GibDatumZurAusfuehrung();
   void gekochtesRezeptSpeichern();
   Future<void> naehrwerteBerechnen();
+
 
 
 

@@ -16,9 +16,13 @@ class Settings {
   @HiveField(3)
   int letztesRezept_id;
 
+  @HiveField(4)
+  bool naehrwerteAnzeigen;
+
   Settings(
       {required this.id,
       required this.toleranzbereich,
       required this.vorratskammerNutzen,
-      required this.letztesRezept_id});
+      required this.letztesRezept_id,
+      required this.naehrwerteAnzeigen});
 }

@@ -1,4 +1,6 @@
-import 'package:smart_waage/Fachlogik/SteuerungsAPI/GekochtesRezept.dart';
+
+
+import 'GekochtesRezeptGrenzklasse.dart';
 
 abstract class WochenplanController{
 
@@ -9,11 +11,7 @@ abstract class WochenplanController{
   get WochenplanNotifier;
 
 
-  ///Leitet den Tabwechsel zum Rezepte Tab ein
-  RezeptSuchen();
-
-
-  /// Speichert [gekochtesRezept] in [WochenplanNotifier] ein und benachrichtigt so Listener über Änderungen
-  RezeptInWochenplanEinfuegen(GekochtesRezept gekochtesRezept);
+  ///Leitet den Tabwechsel vom PläneTab auf den SuchenTab ein
+  suchen() ;
 
 }

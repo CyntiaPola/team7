@@ -19,7 +19,7 @@ class VorratskammerinhaltAdapter extends TypeAdapter<Vorratskammerinhalt> {
     return Vorratskammerinhalt(
       vorratskammerinhalt_id: fields[0] as int,
       zutatsname_id: fields[1] as int,
-      menge: fields[2] as bool,
+      menge: fields[2] as int,
       einheit: fields[3] as String,
     );
   }

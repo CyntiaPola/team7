@@ -12,7 +12,6 @@ class ICRUDschrittimpl implements ICRUDschritt {
   var _schrittBox;
 
   _initBox() async {
-    //Hive.registerAdapter(RezeptAdapter());
     if (_schrittBox == null) _schrittBox = await Hive.openBox("schritte");
   }
 
@@ -22,7 +21,6 @@ class ICRUDschrittimpl implements ICRUDschritt {
     Schritt schritt = schritte.firstWhere((element) =>
         element.rezept_id == rezept_id &&
         element.schrittnummer == schrittnummer);
-    //rezeptBox.close();
 
     return schritt;
   }
@@ -61,16 +59,19 @@ class ICRUDschrittimpl implements ICRUDschritt {
         waage: waage,
         beschreibung: beschreibung);
     await _instance._schrittBox.add(schritt);
-    //await _instance._rezeptBox.close();
 
     return schrittID;
   }
 
   Future<int> deleteSchritt(int schritt_id) async {
     await _instance._initBox();
-    await _instance._schrittBox.deleteAt(schritt_id);
+    var schritte = _instance._schrittBox.values;
+    for (int i = schritte.length - 1; i >= 0; i--) {
+      if (schritte.elementAt(i).schritt_id == schritt_id) {
+        await _instance._schrittBox.deleteAt(i);
+      }
+    }
     return 0;
-    //rezeptBox.close();
   }
 
   Future<int> deleteSchritteNachRezeptId(int rezept_id) async {
@@ -82,6 +83,5 @@ class ICRUDschrittimpl implements ICRUDschritt {
       }
     }
     return 0;
-    //rezeptBox.close();
   }
 }

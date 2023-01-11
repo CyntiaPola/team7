@@ -1,4 +1,5 @@
 
+
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -7,21 +8,26 @@ import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDeinkaufsliste.dar
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDgekochtesRezept.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDkategorie.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDschritt.dart';
+import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDsettings.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutaten.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutaten_Name.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/ICRUDzutats_Menge.dart';
 import 'package:smart_waage/Datenhaltung/DatenhaltungsAPI/rezept.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/KochenRezeptAnzeigenController.dart';
+import 'package:smart_waage/Fachlogik/SteuerungsAPI/Kochen_Controller.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/SettingsController.dart';
 import 'package:smart_waage/Fachlogik/SteuerungsAPI/Zutat_Rezeptanzeige.dart';
 import 'package:smart_waage/Fachlogik/service_locator.dart';
 import '../../Datenhaltung/DatenhaltungsAPI/ICRUDkategorieRezeptZuordnung.dart';
 import '../../Datenhaltung/DatenhaltungsAPI/ICRUDnaehrwerte_pro_100g.dart';
+import '../../Datenhaltung/DatenhaltungsAPI/ICRUDvorratskammerinhalt.dart';
 import '../../Datenhaltung/DatenhaltungsAPI/gekochtesRezept.dart';
+import '../../Datenhaltung/DatenhaltungsAPI/settings.dart';
 import '../../Datenhaltung/DatenhaltungsAPI/zutaten_Name.dart';
 import '../SteuerungsAPI/Naehrwerte.dart';
 import '../SteuerungsAPI/RezeptAnzeigenController.dart';
 import '../SteuerungsAPI/Schritte_Rezeptanzeige.dart';
+import '../../Datenhaltung/DatenhaltungsAPI/ICRUDdichte.dart';
 
 class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   ///Zugriffspunkt auf RezepteGUI in Datenbank
@@ -57,6 +63,25 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   ICRUDnaehrwerte_pro_100g naehrwertSchnittstelle =
       getIt<ICRUDnaehrwerte_pro_100g>();
 
+  ///Zugriffspunkt auf Settings in Datenbank
+  ICRUDsettings settingsSchnittstelle= getIt<ICRUDsettings>();
+
+
+  ///Zugriffspunkt auf den Vorratskammerinhalt in der Datenbank
+  ICRUDvorratskammerinhalt vorratskammerSchnittstelle = getIt<ICRUDvorratskammerinhalt>();
+
+  ///Zugriffspunkt auf die Dichtewerte in der Datenbank
+  ICRUDdichte dichteSchnittstelle =getIt<ICRUDdichte>();
+
+
+
+
+
+
+  bool naehrwerteAnzeigen=true;
+  bool vorratskammerVerwenden=true;
+
+
   ///aktuelles Rezept
   Rezept rezept =
       Rezept(rezept_id: 0, titel: '', dauer: 0, anspruch: 0, bild: '');
@@ -64,8 +89,14 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   ///Schritte des aktuellen Rezepts
   List<Schritte_Rezeptanzeige> schrittliste = [];
 
+
+  ///Speichert vom Nutzer gewählte Portionsangabe, default 1
+  double aktuelleportion = 1.0;
+
   ///zu kochendes Rezept
   GekochtesRezept gekochtesRezept = GekochtesRezept(
+    portion: 1.0
+      ,
       rezept_id: 0,
       gekochtesRezept_ID: 0,
       abgeschlossen: false,
@@ -85,6 +116,8 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   ///Zutaten des aktuellen Rezepts
   List<Zutat_Rezeptanzeige> zutatenliste = [];
 
+  List<int> zutatendifferenzen =[];
+
   ///speichert Zutaten als Liste von Objekten mit Name, Menge, Einheit einer Zutat
   @override
   final einkaufslisteNotifier = ValueNotifier<List<Zutat_Rezeptanzeige>>(
@@ -96,19 +129,24 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   final naehrwertNotifier = ValueNotifier<Naehrwerte>(
       Naehrwerte(kcal: 0, fat :0, saturatedFat: 0, sodium:  0, sugar: 0, protein: 0, ));
 
-  ///Speichert vom Nutzer gewählte Portionsangabe, default 1
-  double aktuelleportion = 1.0;
+
 
   ///Kategorien des aktuellen Rezepts
   List<String> kategorienliste = [];
 
   ///Lädt anhand der [rezeptid] alle Daten zu dem Rezept in den Controller.
   Future<void> RezeptHolen(int rezeptid) async {
+
+    //test();
+
+    Settings settings= await settingsSchnittstelle.getSettings();
+    naehrwerteAnzeigen= settings.naehrwerteAnzeigen;
+    vorratskammerVerwenden =settings.vorratskammerNutzen;
+
     schrittliste = []; //Reihenfolge klären
     zutatenliste = [];
     kategorienliste = [];
     rezept = await rezeptSchnittstelle.getRezept(rezeptid);
-    print(rezept.rezept_id);
     var schritte = await schrittSchnittstelle.getSchritteByRezeptId(rezeptid);
     var zutaten = await zutatenSchnittstelle.getRezeptZutaten(rezeptid);
     var kategoriezuordnungen = await kategorieRezeptZuordnungSchnittstelle
@@ -126,7 +164,7 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
       zutatenliste.add(Zutat_Rezeptanzeige(
           name: name.deutsch,
           menge: zutaten.elementAt(i).menge_pp.toDouble().toString(),
-          einheit: "g")); // Hier noch Einheit einfügen
+          einheit: " "+ zutaten.elementAt(i).einheit));
     }
 
     for (int i = 0; i < schritte.length; i++) {
@@ -160,19 +198,24 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
     einkaufslisteNotifier.value = zutatenliste;
 
     naehrwerteBerechnen();
+    await differenzZuVorratskammerGeben();
   }
 
-  ///Übergibt die Daten des aktuellen Rezepts an die KochenSteuerung Komponente und führt Wechsel zu Kochentab herbei
-  void kochen() {
+  ///Übergibt die Daten des aktuellen Rezepts an die KochenSteuerung Komponente, regt Anlegen eines neuen gekochtesRezepts an,
+  /// speichert dessen Id als zuletzt gekochtes Rezept in den Settings ab und führt Wechsel zu Kochentab herbei
+  Future<void> kochen() async {
     getIt<KochenRezeptAnzeigenController>().RezeptSetzen(rezept, schrittliste,
         0, zutatennamen, zutatenliste, aktuelleportion, kategorienliste);
-    getIt<SettingsController>().onItemTapped(3);
+    int gekochtesRezeptid= await getIt<Kochen_Controller>().gekochtesRezeptAnlegenBeiKlickAufKochen(rezept.rezept_id, aktuelleportion);
+    await getIt<Kochen_Controller>().DichteLaden();
+    SettingsController settingsController =getIt<SettingsController>();
+    settingsController.onItemTapped(3);
+    settingsController.setzeLetzteRezeptId(gekochtesRezeptid);
+     settingsController.settingsSpeichern();
   }
 
   /// Berechnet für die Zutatenliste und die Schrittliste die neuen Mengenangaben für [portion] Portionen und passt den Wert von aktuelleportion an
   void portionAnpassen(double portion) {
-    print(aktuelleportion);
-    print(portion);
     for (int i = 0; i < zutatenliste.length; i++) {
       zutatenliste[i].menge =
           ((double.parse(zutatenliste[i].menge) / aktuelleportion * portion))
@@ -195,6 +238,7 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
 
   ///Gibt die aktuelle vom Nutzer gewählte Portionsangabe zurück
   double portionGeben() {
+
     return aktuelleportion;
   }
 
@@ -286,9 +330,15 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   }
 
   ///Erstellt mit dem Wunschdatum der Ausführung [datum] und den bereits geladenen Daten des Rezepts ein GekochtesRezept , übergibt dies an die PläneSteuerung Komponente und führt Wechsel zu Plänetab herbei
-  void planen(DateTime datum) {
-    //Muss noch programmiert werden
-  }
+  Future<int> planen(DateTime datum) async {
+
+
+    int naehrwert_id = await naehrwertSchnittstelle.setNaehrwerte_pro_100g(-2, 0, 0, 0, 0, 0, 0);
+
+   var gekochtesRezeptId= await gekochtesRezeptSchnittstelle.setGekochteRezept(  rezept.rezept_id, datum, false, naehrwert_id, 0, aktuelleportion);
+
+   return gekochtesRezeptId;
+    }
 
   ///Gibt Liste an Zutaten die eingekauft werden sollen zurück, die jeweils einen String für name, menge und einheit einer Zutat enthalten
   ///- default: Liste der Rezeptzutaten
@@ -374,6 +424,7 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
   }
 
   Future<void> naehrwerteBerechnen() async {
+
     double kcal = 0;
     double fat = 0;
     double saturatedFat = 0;
@@ -382,10 +433,12 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
     double sodium = 0;
 
     for (int i = 0; i < zutatenliste.length; i++) {
+
       int zutatennameid =
           await zutatennameSchnittstelle.getZutatenNameId(zutatenliste[i].name);
       var naehrwerte =
           await naehrwertSchnittstelle.getNaehrwertByNameId(zutatennameid);
+
       if (naehrwerte != null) {
         if (naehrwerte.kcal != -1 && kcal != -1) {
           kcal = kcal + naehrwerte.kcal/100*double.parse(zutatenliste[i].menge);
@@ -426,7 +479,103 @@ class RezeptAnzeigenControllerImpl implements RezeptAnzeigenController {
 
     naehrwertNotifier.value= Naehrwerte(kcal: kcal, fat :fat, saturatedFat: saturatedFat, sodium:  sodium, sugar: sugar, protein: protein, );
 
-    //Muss noch auf Menge angepasst werden
 
   }
-}
+
+  ///Leitet den Tabwechsel vom RezepteTab auf den PläneTab ein
+  wochenplanAnzeigen() {
+    getIt<SettingsController>().onItemTapped(4);
+  }
+
+  Future<void> differenzZuVorratskammerGeben() async {
+
+    List<int> ausgabe=[];
+    for(int j=0; j< zutatenliste.length; j++) {
+      String name = zutatenliste.elementAt(j).name;
+      int  menge = (double.parse(zutatenliste.elementAt(j).menge)).toInt();
+      String einheit = zutatenliste.elementAt(j).einheit.replaceAll(" ", "");
+      int differenz = 0;
+      var zutatennameid = await zutatennameSchnittstelle.getZutatenNameId(name);
+      var vorratskammerinhalte = await vorratskammerSchnittstelle
+          .getVorratskammerinhalte();
+      bool gefunden =false;
+      if (vorratskammerinhalte != null) {
+        for (int i = 0; i < vorratskammerinhalte.length; i++) {
+          if (vorratskammerinhalte
+              .elementAt(i)
+              .zutatsname_id == zutatennameid && vorratskammerinhalte
+              .elementAt(i)
+              .menge > 0) {
+            if (vorratskammerinhalte
+                .elementAt(i)
+                .einheit == einheit) {
+              differenz = (menge - vorratskammerinhalte
+                  .elementAt(i)
+                  .menge).toInt();
+              gefunden=true;
+            }
+
+            else if (vorratskammerinhalte
+                .elementAt(i)
+                .einheit == 'g') {
+              var dichte = await dichteSchnittstelle.getDichte(zutatennameid);
+              var dichtewert = 1.0;
+              if (dichte != null) {
+                dichtewert = dichte!.volumen_pro_100g;
+              }
+
+              differenz = (menge * dichtewert - vorratskammerinhalte
+                  .elementAt(i)
+                  .menge).toInt();
+              gefunden=true;
+            }
+            else {
+              var dichte = await dichteSchnittstelle.getDichte(zutatennameid);
+              var dichtewert = 1.0;
+              if (dichte != null) {
+                dichtewert = dichte!.volumen_pro_100g;
+              }
+
+              differenz = (menge / dichtewert - vorratskammerinhalte
+                  .elementAt(i)
+                  .menge).toInt();
+              gefunden=true;
+            }
+            if(differenz>0) {
+              ausgabe.add(differenz);
+            }
+            else{
+
+              ausgabe.add(0);
+            }
+          }
+
+
+        }
+        if(gefunden==false){
+        ausgabe.add(menge);
+      }
+
+      }
+      else {
+        ausgabe.add(menge);
+      }
+
+      zutatendifferenzen=ausgabe;
+    }
+
+
+  }
+
+  List<int> gibZutatenDifferenzen (){
+    return zutatendifferenzen;
+  }
+
+
+
+  }
+
+
+
+
+

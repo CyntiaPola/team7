@@ -21,13 +21,14 @@ class SettingsAdapter extends TypeAdapter<Settings> {
       toleranzbereich: fields[1] as int,
       vorratskammerNutzen: fields[2] as bool,
       letztesRezept_id: fields[3] as int,
+      naehrwerteAnzeigen: fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Settings obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class SettingsAdapter extends TypeAdapter<Settings> {
       ..writeByte(2)
       ..write(obj.vorratskammerNutzen)
       ..writeByte(3)
-      ..write(obj.letztesRezept_id);
+      ..write(obj.letztesRezept_id)
+      ..writeByte(4)
+      ..write(obj.naehrwerteAnzeigen);
   }
 
   @override

@@ -12,36 +12,33 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
 
   late bool language;
 
-  late List<EinkaufeModel> guiList;
+  // late List<EinkaufeModel> guiList = [];
+  late Map<int,EinkaufeModel> guiList = {};
 
-  late List<Zutaten_Name> namenList;
+
+  late List<Zutaten_Name> namenList = [];
 
   ICRUDeinkaufsliste icruDeinkaufsliste  = getIt<ICRUDeinkaufsliste>();
 
   ICRUDzutaten_Name icruZutatName = getIt<ICRUDzutaten_Name>();
 
-  List<Einkaufsliste> suchenEinkaufsListe = [];
-
   List<int> deltaLoeschen = [];
-
-  List<Einkaufsliste> deltaAktualisieren = [];
-
-
-
 
   @override
   // TODO: implement einkaufslisteNotifier
-  final einkaufslisteNotifier = ValueNotifier<List<Einkaufsliste>>([]);
+  final einkaufslisteNotifier = ValueNotifier<List<EinkaufeModel>>([]);
 
-
-  @override
-  // TODO: implement suchlisteNotifier
-  final suchlisteNotifier = ValueNotifier<List<Einkaufsliste>>([]);
 
 
   @override
   void abhaken(int index) {
     // TODO: implement abhaken
+  }
+
+
+  @override
+  Future<void> einkaufsListeAnpassenFrom(EinkaufeModel einkaufeModel) async {
+      return einkaufsListeAnpassen(einkaufeModel.name, einkaufeModel.weight, einkaufeModel.unit, einkaufeModel.isChecked);
   }
 
   @override
@@ -52,10 +49,19 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
 
     int einkaufeId = await icruDeinkaufsliste.setEinkaufsliste(zutatsnameId, -1, menge, einheit);
 
-    guiList.add(EinkaufeModel(einkaufeId,name,menge,einheit));
+    guiList.putIfAbsent(einkaufeId,()=>EinkaufeModel(einkaufeId,name,menge,einheit));
 
-    einkaufslisteNotifier.value = guiList;
+    einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).toList();
 
+  }
+
+  List<String> getList() {
+
+    List<String> namen = [];
+    for (int i = 0; i < namenList.length; i++) {
+      namen.add( namenList.elementAt(i).deutsch);
+    }
+    return namen;
   }
 
   @override
@@ -65,7 +71,6 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
     language = false;
     var ekl = await icruDeinkaufsliste.getEinkaufslisten();
     var namen = await icruZutatName.getZutatenNamen();
-    print("\nanz zutaten: ${namen.length}\n");
 
     for (int i = 0; i < namen.length; i++) {
       namenList.add(Zutaten_Name(
@@ -90,18 +95,24 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
       int einkaufeId = ekl.elementAt(i).einkaufsliste_id;
       int menge = ekl.elementAt(i).menge;
       String einheit =  ekl.elementAt(i).einheit;
-      guiList.add(EinkaufeModel(einkaufeId,name,menge,einheit));
+      var einkauf = EinkaufeModel(einkaufeId,name,menge,einheit);
+      guiList.putIfAbsent(einkaufeId,()=>einkauf);
     }
+
+    einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).toList();
+
 
   }
 
   @override
-  void loeschen(int index) {
+  void loeschen(int id) {
     // TODO: implement loeschen
 
-    deltaLoeschen.add(index);
-    guiList.removeWhere((element) => element.id == index);
-    einkaufslisteNotifier.value = guiList;
+    deltaLoeschen.add(id);
+    guiList.remove(id);
+    einkaufslisteNotifier.value = einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).toList();
+
+
   }
 
   @override
@@ -112,7 +123,14 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
 
   @override
   void suchen(String zutat) {
-    // TODO: implement suchen
+    print(zutat);
+
+    einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).where((einkaufModel) {
+      return einkaufModel.name.toLowerCase().contains(zutat.toLowerCase());
+    }).toList();
+
+
+    print(einkaufslisteNotifier.value);
   }
 
   @override
