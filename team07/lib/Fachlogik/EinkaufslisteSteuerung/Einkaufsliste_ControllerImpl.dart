@@ -107,10 +107,10 @@ class Einkaufsliste_ControllerImpl implements Einkaufsliste_Controller{
   @override
   void loeschen(int id) {
     // TODO: implement loeschen
-
+    print('loeschen $id');
     deltaLoeschen.add(id);
     guiList.remove(id);
-    einkaufslisteNotifier.value = einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).toList();
+   einkaufslisteNotifier.value = guiList.entries.map((e) => e.value).toList();
 
 
   }

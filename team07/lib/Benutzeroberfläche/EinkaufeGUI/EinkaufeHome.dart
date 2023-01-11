@@ -188,7 +188,7 @@ class EinkaufeHomeState extends State<EinkaufeHome> {
                           child: EinkaufeItem(einkaufList.elementAt(index),()=>{
                             deleteItem(context).then((value) => {
                               if(value!){
-                                //einkaufeLists.remove(einkaufeLists[index]),
+                                widget.einkaufslisteManager.loeschen(einkaufList.elementAt(index).id),
                                 setState(() { })
                               }
                             })
